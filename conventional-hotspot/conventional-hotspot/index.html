@@ -752,6 +752,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#flashing-the-dvm-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flashing the DVM Firmware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flashing the DVM Firmware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hsflashez-gpio-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HSFlashEZ (GPIO Method)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1128,6 +1156,34 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#flashing-the-dvm-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flashing the DVM Firmware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Flashing the DVM Firmware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hsflashez-gpio-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HSFlashEZ (GPIO Method)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1213,11 +1269,97 @@
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics CH340 serial converter &lt;-- MMDVM_HS_HAT_DUPLEX
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 </span></code></pre></div>
+</li>
+<li>
+<p>Next you will need to locate the physical device identifier of the adapter. A single adapter will likely reside at <code>/dev/ttyUSB0</code>.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ls<span class="w"> </span>/dev<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>USB
 </span></code></pre></div>
 </li>
+</ol>
+<h2 id="flashing-the-dvm-firmware">Flashing the DVM Firmware</h2>
+<p>Now that your compute is properly set up and your modem has been successfully detected, you will need to flash it with the firmware from the DVMProject. There are a couple of different ways to do this; this guide will cover using the flashing utility <code>HSFlashEZ</code> and using the MMDVM_HS_USB adapter. Both methods will boot your modem into bootloader mode so new firmware can be written via <code>stm32flash</code>.</p>
+<h3 id="hsflashez-gpio-method">HSFlashEZ (GPIO Method)</h3>
+<ol>
 <li>
-<p>This will show the physical location of the adapter. A single adapter will likely reside at <code>/dev/ttyUSB0</code>.</p>
+<p>Connect your modem to the Raspberry Pi's GPIO headers.</p>
+</li>
+<li>
+<p>Clone the <code>hsflash</code> GitHub repository and compile the code.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ThisGuyNeedsABeer/hsflash.git
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">cd</span><span class="w"> </span>hsflash/
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>gcc<span class="w"> </span>hsflash.c<span class="w"> </span>-o<span class="w"> </span>hsflash
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>chmod<span class="w"> </span>+x<span class="w"> </span>hsflash
+</span></code></pre></div>
+</li>
+<li>
+<p>Download the <code>dvm-firmware-hs-hat-dual.bin</code> firmware to the <code>hsflash</code> directory.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>wget<span class="w"> </span>https://github.com/DVMProject/dvmfirmware-hs/releases/download/2025-11-06/dvm-firmware-hs-hat-dual.bin
+</span></code></pre></div>
+</li>
+<li>
+<p>Flash the newly downloaded firmware. If <code>stm32flash</code> is missing, <code>hsflash</code> will attempt to install it.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>./hsflash
+</span></code></pre></div>
+<p>Example output:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>██╗  ██╗███████╗   ███████╗██╗      █████╗ ███████╗██╗  ██╗
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>██║  ██║██╔════╝   ██╔════╝██║     ██╔══██╗██╔════╝██║  ██║
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>███████║███████╗   █████╗  ██║     ███████║███████╗███████║
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>██╔══██║╚════██║   ██╔══╝  ██║     ██╔══██║╚════██║██╔══██║
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>██║  ██║███████║██╗██║     ███████╗██║  ██║███████║██║  ██║
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>╚═╝  ╚═╝╚══════╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>                  * HOTSPOT FLASH EZ *
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>[WARN] stm32flash is not installed.
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>Install stm32flash now? [Y/n]: y
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>... apt output omitted...
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>Enter BOOT0 GPIO pin [default 20]: 20
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>Enter NRST GPIO pin [default 21]: 21
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>Enter firmware filename (e.g. dvm-firmware-hs-hat-dual.bin): dvm-firmware-hs-hat-dual.bin
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>Enter serial port [default /dev/ttyAMA0]: /dev/ttyAMA0
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>===== Configuration Summary =====
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>BOOT0 GPIO      : 20
+</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>NRST GPIO       : 21
+</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>BIN_FILE        : dvm-firmware-hs-hat-dual.bin
+</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>SERIAL_PORT     : /dev/ttyAMA0
+</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>stm32flash      : found
+</span><span id="__span-9-25"><a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>=================================
+</span><span id="__span-9-26"><a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>
+</span><span id="__span-9-27"><a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a>Proceed with flashing? [Y/n]: y
+</span><span id="__span-9-28"><a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>[INFO] Proceeding with firmware flash setup...
+</span><span id="__span-9-29"><a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a>[INFO] Setting BOOT0 high (GPIO20)...
+</span><span id="__span-9-30"><a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>[ raspi-gpio is deprecated - try `pinctrl` instead ]
+</span><span id="__span-9-31"><a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a>[INFO] Asserting reset (GPIO21 low)...
+</span><span id="__span-9-32"><a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>[INFO] Releasing reset (GPIO21 high)...
+</span><span id="__span-9-33"><a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a>[INFO] Flashing firmware...
+</span><span id="__span-9-34"><a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a>stm32flash 0.7
+</span><span id="__span-9-35"><a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a>
+</span><span id="__span-9-36"><a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a>http://stm32flash.sourceforge.net/
+</span><span id="__span-9-37"><a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a>
+</span><span id="__span-9-38"><a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a>Using Parser : Raw BINARY
+</span><span id="__span-9-39"><a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a>Size         : 57248
+</span><span id="__span-9-40"><a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a>Interface serial_posix: 57600 8E1
+</span><span id="__span-9-41"><a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a>Version      : 0x22
+</span><span id="__span-9-42"><a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a>Option 1     : 0x00
+</span><span id="__span-9-43"><a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>Option 2     : 0x00
+</span><span id="__span-9-44"><a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a>Device ID    : 0x0410 (STM32F10xxx Medium-density)
+</span><span id="__span-9-45"><a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>- RAM        : Up to 20KiB  (512b reserved by bootloader)
+</span><span id="__span-9-46"><a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>- Flash      : Up to 128KiB (size first sector: 4x1024)
+</span><span id="__span-9-47"><a id="__codelineno-9-47" name="__codelineno-9-47" href="#__codelineno-9-47"></a>- Option RAM : 16b
+</span><span id="__span-9-48"><a id="__codelineno-9-48" name="__codelineno-9-48" href="#__codelineno-9-48"></a>- System RAM : 2KiB
+</span><span id="__span-9-49"><a id="__codelineno-9-49" name="__codelineno-9-49" href="#__codelineno-9-49"></a>Write to memory
+</span><span id="__span-9-50"><a id="__codelineno-9-50" name="__codelineno-9-50" href="#__codelineno-9-50"></a>Erasing memory
+</span><span id="__span-9-51"><a id="__codelineno-9-51" name="__codelineno-9-51" href="#__codelineno-9-51"></a>Wrote and verified address 0x0800dfa0 (100.00%) Done.
+</span><span id="__span-9-52"><a id="__codelineno-9-52" name="__codelineno-9-52" href="#__codelineno-9-52"></a>
+</span><span id="__span-9-53"><a id="__codelineno-9-53" name="__codelineno-9-53" href="#__codelineno-9-53"></a>Resetting device...
+</span><span id="__span-9-54"><a id="__codelineno-9-54" name="__codelineno-9-54" href="#__codelineno-9-54"></a>Reset done.
+</span><span id="__span-9-55"><a id="__codelineno-9-55" name="__codelineno-9-55" href="#__codelineno-9-55"></a>
+</span><span id="__span-9-56"><a id="__codelineno-9-56" name="__codelineno-9-56" href="#__codelineno-9-56"></a>[INFO] Setting BOOT0 low (GPIO20)...
+</span><span id="__span-9-57"><a id="__codelineno-9-57" name="__codelineno-9-57" href="#__codelineno-9-57"></a>[INFO] Resetting MCU to boot from flash...
+</span><span id="__span-9-58"><a id="__codelineno-9-58" name="__codelineno-9-58" href="#__codelineno-9-58"></a>[SUCCESS] Flashing complete and STM32 restarted successfully.
+</span></code></pre></div>
 </li>
 </ol>
 
