@@ -26,6 +26,7 @@ Links to purchase hardware will be shared when applicable. In order to to keep t
 
 ### Traditional RF Site Hardware
 This section will feature components used for larger sites that are operating over traditional RF.
+
 - Raspberry Pi or similar compute: See the list above of approved Raspberry Pi models.
 - [DVM-V1 Duplex Modem](https://store.w3axl.com/products/dvm-v1-duplex-modem): This is a product made by W3AXL, a direct contributor to the DVMProject. The result nearly a year of continuous iteration, the DVM-V1 is perfect for implementing a multi-mode digital repeater using any base station radios you want. With digitally-controlled softpots for TX & RX modulation levels, an RJ45 for radio interfacing, and a USB-C connection to your host PC of choice, the DVM-V1 takes the original MMDVM modem concept and makes it even better.
 - [PCB End Plates For DVM-V1](https://store.w3axl.com/products/pcb-end-plates-for-dvm-v1): This is a product made by W3AXL, a direct contributor to the DVMProject. Silkscreened and shielded end plates for the DVM-V1 modem boards.
