@@ -19,21 +19,21 @@
 
 1. Ensure your system is fully update to date.
 
-```bash
+    ```bash
     # sudo apt update && sudo apt upgrade
-```
+    ```
 
 2. The following steps need to be performed to ensure that the MMDVM_HS_HAT_DUPLEX board is properly exposed via the GPIO headers. These steps should be configured **before** attaching the modem to the GPIO headers.
   1. **Skip this step if you are using an MMDVM_HS_USB adapter or non-Pi based compute.**
 
-```bash
+    ```bash
     # ssh user@raspberrypi
     # sudo systemctl disable bluetooth.service serial-getty@ttyAMA0.service
     # sudo systemctl mask serial-getty@ttyAMA0.service
     # grep '^dtoverlay=disable-bt' /boot/firmware/config.txt || echo 'dtoverlay=disable-bt' | sudo tee -a /boot/firmware/config.txt
     # sudo sed -i 's/^console=serial0,115200 *//' /boot/firmware/cmdline.txt
     # sudo reboot
-```
+    ```
 
 **Note:** These steps were taken from the [dvmhost GitHub repository](https://github.com/DVMProject/dvmhost) under the **Raspberry Pi Preparation Notes** section and updated to accommodate the Raspbian 12 file structure.
 
