@@ -1,3 +1,0 @@
-### Traditional RF Site
-
-Placeholder
