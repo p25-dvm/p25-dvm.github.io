@@ -35,7 +35,11 @@ nav:
       - Installation: getting-started/installation.md
       - Quick Start: getting-started/quickstart.md
   - Hardware: hardware/hardware.md
-  - Conventional Hotspot: conventional-hotspot/conventional-hotspot.md
+  - Hotspots:
+      - Conventional Hotspot: conventional-hotspot/conventional-hotspot.md
+      - Trunking Hotspot: trunking-hotspot/trunking-hotspot.md
+  - Traditional RF Site:
+      - Motorola CDM1250 Site: traditional-rf-site/motorola-cdm1250-site.md
   - Reference:
       - API: reference/api.md
       - Configuration: reference/configuration.md
