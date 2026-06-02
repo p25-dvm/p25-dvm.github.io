@@ -1,0 +1,3 @@
+### Conventional Hotspot
+
+Placeholder
