@@ -35,6 +35,7 @@ nav:
       - Installation: getting-started/installation.md
       - Quick Start: getting-started/quickstart.md
   - Hardware: hardware/hardware.md
+  - Conventional Hotspot: conventional-hotspot/conventional-hotspot.md
   - Reference:
       - API: reference/api.md
       - Configuration: reference/configuration.md
