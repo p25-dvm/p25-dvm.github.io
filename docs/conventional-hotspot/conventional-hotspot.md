@@ -24,7 +24,7 @@
     ```
 
 2. The following steps need to be performed to ensure that the MMDVM_HS_HAT_DUPLEX board is properly exposed via the GPIO headers. These steps should be configured **before** attaching the modem to the GPIO headers.
-  1. **Skip this step if you are using an MMDVM_HS_USB adapter or non-Pi based compute.**
+   !!! **Skip this step if you are using an MMDVM_HS_USB adapter or non-Pi based compute.**
 
     ```bash
     # ssh user@raspberrypi
@@ -35,7 +35,7 @@
     # sudo reboot
     ```
 
-**Note:** These steps were taken from the [dvmhost GitHub repository](https://github.com/DVMProject/dvmhost) under the **Raspberry Pi Preparation Notes** section and updated to accommodate the Raspbian 12 file structure.
+!!! **Note:** These steps were taken from the [dvmhost GitHub repository](https://github.com/DVMProject/dvmhost) under the **Raspberry Pi Preparation Notes** section and updated to accommodate the Raspbian 12 file structure.
 
 - `/boot/config.txt` -> `/boot/firmware/config.txt`
 - `/boot/cmdline.txt` -> `/boot/firmware/cmdline.txt`
@@ -49,7 +49,7 @@
     ```
 
 2. Review and notate what devices your host can see, specifically USB devices **before** plugging in the MMDVM_HS_USB adapter. The command below will show the devices attached to the USB bus by vendor.
-  1. **Note:** There may be some variance based on which chipset you have. In the example below There are 2 MMDVM_HS_HAT_DUPLEX modems attached, and they both show a different device ID.
+   !!! **Note:** There may be some variance based on which chipset you have. In the example below There are 2 MMDVM_HS_HAT_DUPLEX modems attached, and they both show a different device ID.
 
     ```
     # lsusb
