@@ -1,7 +1,7 @@
 ## Conventional Hotspot Setup
 
 ### Hardware Requirements
-- **Computer:** A Raspberry Pi or similar compute device with power and storage. For supported devices see [hardware](https://p25-dvm.github.io/hardware/hardware/).
+- **Compute:** A Raspberry Pi or similar compute device with power and storage. For supported devices see [hardware](https://p25-dvm.github.io/hardware/hardware/).
 - **Modem Hardware:** An MMDVM_HS_HAT_DUPLEX board. For supported devices see [hardware](https://p25-dvm.github.io/hardware/hardware/).
   - **Optional:** If you do not wish to use the GPIO headers on a Raspberry Pi or you are using a non-Raspberry Pi compute device, you will need an MMDVM_HS_USB adapter.
 
@@ -19,7 +19,7 @@
 sudo apt update && sudo apt upgrade
 ```
 2. The following steps need to be performed to ensure that the MMDVM_HS_HAT_DUPLEX board is properly exposed via the GPIO headers. These steps should be configured **before** attaching the modem to the GPIO headers. 
- - **Skip this step if you are using an MMDVM_HS_USB adapter or non-Pi based compute.**
+   - **Skip this step if you are using an MMDVM_HS_USB adapter or non-Pi based compute.**
 
 ```bash
 ssh user@raspberrypi
@@ -44,7 +44,7 @@ sudo apt update && sudo apt upgrade
 ```
 lsusb
 ```
-  - This will show the devices attached to the USB bus by vendor. There may be some variance based on which chipset you have. In the example below There are 2 MMDVM_HS_HAT_DUPLEX modems attached, and they both show a different device ID.
+   - This will show the devices attached to the USB bus by vendor. There may be some variance based on which chipset you have. In the example below There are 2 MMDVM_HS_HAT_DUPLEX modems attached, and they both show a different device ID.
 ```
 Example Output: 
 Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
@@ -58,4 +58,4 @@ Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
  ```
  ls /dev | grep /dev/ttyUSB
  ```
- - This will show the physical location of the adapter. A single adapter will likely reside at `/dev/ttyUSB0`.
+  - This will show the physical location of the adapter. A single adapter will likely reside at `/dev/ttyUSB0`.
