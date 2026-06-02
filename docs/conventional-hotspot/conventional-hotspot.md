@@ -44,14 +44,14 @@
 
 1. Ensure your system is fully update to date.
 
-```bash
-# sudo apt update && sudo apt upgrade
-```
+    ```bash
+    # sudo apt update && sudo apt upgrade
+    ```
 
 2. Review and notate what devices your host can see, specifically USB devices **before** plugging in the MMDVM_HS_USB adapter. The command below will show the devices attached to the USB bus by vendor.
   1. **Note:** There may be some variance based on which chipset you have. In the example below There are 2 MMDVM_HS_HAT_DUPLEX modems attached, and they both show a different device ID.
 
-```
+    ```
     # lsusb
 
     Example Output: 
@@ -61,11 +61,11 @@
     Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
     Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics CH340 serial converter <-- MMDVM_HS_HAT_DUPLEX
     Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-```
+    ```
 
-```
+    ```
     # ls /dev | grep USB
-```
+    ```
 
 3. This will show the physical location of the adapter. A single adapter will likely reside at `/dev/ttyUSB0.`
 
