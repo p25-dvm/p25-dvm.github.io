@@ -346,15 +346,3 @@ h1, h2, h3, h4 {
   font-family: 'Share Tech Mono', monospace !important;
   box-shadow: none !important;
 }
-
-/* ── Permalinks — hidden until hover ── */
-.md-typeset .headerlink {
-  display: none;
-}
-
-.md-typeset h1:hover .headerlink,
-.md-typeset h2:hover .headerlink,
-.md-typeset h3:hover .headerlink,
-.md-typeset h4:hover .headerlink {
-  display: inline;
-}
