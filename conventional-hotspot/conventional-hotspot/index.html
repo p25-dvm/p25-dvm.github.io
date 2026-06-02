@@ -1193,28 +1193,32 @@
 </ul>
 <h3 id="raspberry-pi-usb-debian-12">Raspberry Pi (USB) / Debian 12</h3>
 <ol>
-<li>Ensure your system is fully update to date.</li>
-</ol>
+<li>
+<p>Ensure your system is fully update to date.</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># sudo apt update &amp;&amp; sudo apt upgrade</span>
 </span></code></pre></div>
-<ol>
-<li>Review and notate what devices your host can see, specifically USB devices <strong>before</strong> plugging in the MMDVM_HS_USB adapter. The command below will show the devices attached to the USB bus by vendor.</li>
-<li><strong>Note:</strong> There may be some variance based on which chipset you have. In the example below There are 2 MMDVM_HS_HAT_DUPLEX modems attached, and they both show a different device ID.</li>
-</ol>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>    # lsusb
+</li>
+<li>
+<p>Review and notate what devices your host can see, specifically USB devices <strong>before</strong> plugging in the MMDVM_HS_USB adapter. The command below will show the devices attached to the USB bus by vendor.</p>
+</li>
+<li>
+<p><strong>Note:</strong> There may be some variance based on which chipset you have. In the example below There are 2 MMDVM_HS_HAT_DUPLEX modems attached, and they both show a different device ID.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a># lsusb
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    Example Output: 
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    Bus 003 Device 005: ID 9986:7523  USB Serial &lt;-- MMDVM_HS_HAT_DUPLEX
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics CH340 serial converter &lt;-- MMDVM_HS_HAT_DUPLEX
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>Example Output: 
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>Bus 003 Device 005: ID 9986:7523  USB Serial &lt;-- MMDVM_HS_HAT_DUPLEX
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics CH340 serial converter &lt;-- MMDVM_HS_HAT_DUPLEX
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>    # ls /dev | grep USB
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a># ls /dev | grep USB
 </span></code></pre></div>
-<ol>
-<li>This will show the physical location of the adapter. A single adapter will likely reside at <code>/dev/ttyUSB0.</code></li>
+</li>
+<li>
+<p>This will show the physical location of the adapter. A single adapter will likely reside at <code>/dev/ttyUSB0.</code></p>
+</li>
 </ol>
 
 
