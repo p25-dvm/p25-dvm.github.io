@@ -348,12 +348,13 @@ h1, h2, h3, h4 {
 }
 
 /* ── Permalinks — hidden until hover ── */
-.headerlink {
-  visibility: hidden;
+.md-typeset .headerlink {
+  display: none;
 }
 
-h1:hover .headerlink,
-h2:hover .headerlink,
-h3:hover .headerlink {
-  visibility: visible;
+.md-typeset h1:hover .headerlink,
+.md-typeset h2:hover .headerlink,
+.md-typeset h3:hover .headerlink,
+.md-typeset h4:hover .headerlink {
+  display: inline;
 }
