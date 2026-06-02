@@ -34,6 +34,7 @@ nav:
       - Introduction: getting-started/introduction.md
       - Installation: getting-started/installation.md
       - Quick Start: getting-started/quickstart.md
+  - Hardware: hardware/hardware.md
   - Reference:
       - API: reference/api.md
       - Configuration: reference/configuration.md
