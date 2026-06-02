@@ -1,27 +1,65 @@
 site_name: The Unofficial DVMProject P25 Knowledge Base
 site_description: A community operated knowledge base regarding P25 operations while utilizing the DVMProject.
 site_url: https://p25-dvm.github.io
+repo_url: https://github.com/p25-dvm/
+repo_name: P25 DVM
 
 theme:
   name: material
+  font:
+    text: Share Tech Mono
+    code: Share Tech Mono
   palette:
-    scheme: slate          # dark mode — remove for light
-    primary: indigo
-    accent: indigo
+    scheme: slate
+    primary: black
+    accent: light green
   features:
     - navigation.tabs
     - navigation.sections
+    - navigation.top
     - search.highlight
+    - search.suggest
     - content.code.copy
+    - content.code.annotate
+
+extra_css:
+  - stylesheets/hacker.css
+
+extra_javascript:
+  - javascripts/hacker.js
 
 nav:
   - Home: index.md
-  - Getting Started: getting-started.md
-  - Reference: reference.md
+  - Getting Started:
+      - Introduction: getting-started/introduction.md
+      - Installation: getting-started/installation.md
+      - Quick Start: getting-started/quickstart.md
+  - Reference:
+      - API: reference/api.md
+      - Configuration: reference/configuration.md
+      - Error Codes: reference/errors.md
 
 markdown_extensions:
-  - pymdownx.highlight
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
   - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
   - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
   - toc:
       permalink: true
+
+plugins:
+  - search
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/<your-github-username>/<your-repo-name>
