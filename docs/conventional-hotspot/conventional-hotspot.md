@@ -23,7 +23,7 @@ This guide will walk you through setting up and configuring a conventional P25 h
 - Internet Connection
 - SSH access to all compute
 
-## Initial Configuration
+## Initial Compute Configuration
 
 ### Raspberry Pi (GPIO)
 
@@ -179,7 +179,7 @@ Now that your compute is properly set up and your modem has been successfully de
 
 COMING SOON
 
-## DVM Configuration
+## dvmfne Configuration
 
 The next sections will cover the configuration of `dvmfne` and `dvmhost`. These are the two software components that are required for a functional P25 hotspot.
 
