@@ -775,6 +775,78 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#mmdvm_hs_usb-usb-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MMDVM_HS_USB (USB Method)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dvm-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DVM Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DVM Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-dvmfne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is dvmfne?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dvmfne-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dvmfne Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connect-to-your-compute-and-download-dvmfne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connect To Your Compute and Download dvmfne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-dvmfne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure dvmfne
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1179,6 +1251,78 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#mmdvm_hs_usb-usb-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MMDVM_HS_USB (USB Method)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dvm-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DVM Configuration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="DVM Configuration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-is-dvmfne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is dvmfne?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dvmfne-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        dvmfne Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#connect-to-your-compute-and-download-dvmfne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Connect To Your Compute and Download dvmfne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configure-dvmfne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configure dvmfne
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1207,18 +1351,31 @@
   <h1>Conventional Hotspot</h1>
 
 <h2 id="conventional-hotspot-setup">Conventional Hotspot Setup</h2>
+<p>This guide will walk you through setting up and configuring a conventional P25 hotspot for use as a standalone network on either ham bands or your own FCC Part 90 license (encryption legal). This guide will not cover connecting into existing hobbyist systems such as NexCom, CTRS, etc.</p>
+<p><strong>This guide assumes the following:</strong></p>
+<ul>
+<li>You are either a licensed ham radio operator or possess an FCC Part 90 business license.</li>
+<li>You possess a basic knowledge of Debian based Linux distributions (Raspbian / Debian 12 Bookworm).</li>
+<li>You have a basic knowledge of networking.</li>
+<li>You possess the necessary hardware to program your radios.</li>
+</ul>
 <h3 id="hardware-requirements">Hardware Requirements</h3>
 <ul>
-<li><strong>Compute:</strong> A Raspberry Pi or similar compute device with power and storage. For supported devices see <a href="https://p25-dvm.github.io/hardware/hardware/">hardware</a>.</li>
-<li><strong>Modem Hardware:</strong> An MMDVM_HS_HAT_DUPLEX board. For supported devices see <a href="https://p25-dvm.github.io/hardware/hardware/">hardware</a>.</li>
+<li><strong>Compute:</strong> A dedicated machine that will serve as a "network core" running <code>dvmfne</code>. A VPS is highly recommended for always on availability. Hetzner, DigitalOcean, Amazon EC2 (Free Tier), are just some examples of budget friendly providers. You can, of course, use a dedicated Linux device or virtual machine on your own network to offset this cost.</li>
+<li><strong>Compute:</strong> A Raspberry Pi or similar compute device with power and storage that will serve as the physical hotspot running <code>dvmhost</code>. For supported devices see <a href="https://p25-dvm.github.io/hardware/hardware/">hardware</a>.</li>
+<li><strong>Modem Hardware:</strong> An MMDVM_HS_HAT_DUPLEX board. For supported devices see <a href="https://p25-dvm.github.io/hardware/hardware/">hardware</a>.<ul>
 <li><strong>Optional:</strong> If you do not wish to use the GPIO headers on a Raspberry Pi or you are using a non-Raspberry Pi compute device, you will need an MMDVM_HS_USB adapter.</li>
+</ul>
+</li>
 </ul>
 <h3 id="software-requirements">Software Requirements</h3>
 <ul>
-<li><strong>Operating System:</strong> Raspbian Pi OS (Legacy, 64-bit) / Debian 12 Bookworm (x86_64)</li>
+<li><strong>Operating System:</strong> Raspbian Pi OS (Legacy, 64-bit) / Debian 12 Bookworm (x86_64)<ul>
 <li><strong>Note:</strong> Raspbian 13 (Modern) / Debian 13 (Trixie) are unsupported at this time.</li>
+</ul>
+</li>
 <li>Internet Connection</li>
-<li>SSH access to your compute</li>
+<li>SSH access to all compute</li>
 </ul>
 <h2 id="initial-configuration">Initial Configuration</h2>
 <h3 id="raspberry-pi-gpio">Raspberry Pi (GPIO)</h3>
@@ -1241,9 +1398,11 @@
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>sudo<span class="w"> </span>reboot
 </span></code></pre></div>
 <ul>
-<li><strong>Note:</strong> These steps were taken from the <a href="https://github.com/DVMProject/dvmhost">dvmhost GitHub repository</a> under the <strong>Raspberry Pi Preparation Notes</strong> section and updated to accommodate the Raspbian 12 file structure.</li>
+<li><strong>Note:</strong> These steps were taken from the <a href="https://github.com/DVMProject/dvmhost">dvmhost GitHub repository</a> under the <strong>Raspberry Pi Preparation Notes</strong> section and updated to accommodate the Raspbian 12 file structure.<ul>
 <li><code>/boot/config.txt</code> → <code>/boot/firmware/config.txt</code></li>
 <li><code>/boot/cmdline.txt</code> → <code>/boot/firmware/cmdline.txt</code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ol>
@@ -1359,6 +1518,170 @@
 </span><span id="__span-9-56"><a id="__codelineno-9-56" name="__codelineno-9-56" href="#__codelineno-9-56"></a>[INFO] Setting BOOT0 low (GPIO20)...
 </span><span id="__span-9-57"><a id="__codelineno-9-57" name="__codelineno-9-57" href="#__codelineno-9-57"></a>[INFO] Resetting MCU to boot from flash...
 </span><span id="__span-9-58"><a id="__codelineno-9-58" name="__codelineno-9-58" href="#__codelineno-9-58"></a>[SUCCESS] Flashing complete and STM32 restarted successfully.
+</span></code></pre></div>
+</li>
+</ol>
+<h3 id="mmdvm_hs_usb-usb-method">MMDVM_HS_USB (USB Method)</h3>
+<p>COMING SOON</p>
+<h2 id="dvm-configuration">DVM Configuration</h2>
+<p>The next sections will cover the configuration of <code>dvmfne</code> and <code>dvmhost</code>. These are the two software components that are required for a functional P25 hotspot.</p>
+<h4 id="what-is-dvmfne">What is dvmfne?</h4>
+<p><strong>Q:</strong> What is <code>dvmfne</code>?</p>
+<p><strong>A:</strong> A network "core", that provides a central server for <code>dvmhost</code> instances to connect to and be networked with, allowing relay of traffic and other data between <code>dvmhost</code> instances and other <code>dvmfne</code> instances.</p>
+<ul>
+<li>Source: <a href="https://github.com/DVMProject/dvmhost">DVMProject GitHub</a></li>
+</ul>
+<h4 id="dvmfne-prerequisites">dvmfne Prerequisites</h4>
+<ol>
+<li>A compute resource to run <code>dvmfne</code>. A VPS from one of the providers in the hardware requirements section is highly advised as it will always be available. This guide will feature a VPS running Debian 12 Bookworm.</li>
+<li>An open port on the compute resource for the downstream hotspots to connect to. 62031 is the default port.</li>
+<li>The <code>dvmfne</code> binary from the latest <code>dvmhost</code> release for your CPU architecture.<ul>
+<li>The latest binaries can be found in the releases section of the <a href="https://github.com/DVMProject/dvmhost">DVMProject GitHub</a>.</li>
+</ul>
+</li>
+</ol>
+<h4 id="connect-to-your-compute-and-download-dvmfne">Connect To Your Compute and Download <code>dvmfne</code></h4>
+<ol>
+<li>
+<p>Download the latest release from the <a href="https://github.com/DVMProject/dvmhost">DVMProject GitHub</a>.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>ssh<span class="w"> </span>user@remotevps
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="nb">cd</span><span class="w"> </span>/opt/
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>sudo<span class="w"> </span>wget<span class="w"> </span><span class="o">[</span>latest-dvmhost-release-for-your-cpu-architecture.tar.gz<span class="o">]</span>
+</span></code></pre></div>
+</li>
+<li>
+<p>Extract and remove the downloaded archive.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>sudo<span class="w"> </span>tar<span class="w"> </span>zxvf<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># Remove archive (optional)</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>sudo<span class="w"> </span>rm<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
+</span></code></pre></div>
+</li>
+<li>
+<p>Organize the <code>/opt/dvm</code> working directory. You are free to set your directories as you see fit, just be sure to update the downstream configuration files as they will reference the paths set forth by this guide.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span>/opt/dvm/
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/examples/
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>sudo<span class="w"> </span>mv<span class="w"> </span>/opt/dvm/*.example.*<span class="w"> </span>/opt/dvm/examples/
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/dvm/log/fne/
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/log/fne-activity
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/rules/
+</span></code></pre></div>
+</li>
+</ol>
+<h4 id="configure-dvmfne">Configure <code>dvmfne</code></h4>
+<ol>
+<li>
+<p>Make a copy of the example <code>fne-config.yml</code> file.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/fne-config.example.yml<span class="w"> </span>/opt/dvm/fne-config.yml
+</span></code></pre></div>
+</li>
+<li>
+<p>Define the base settings for P25 functionality within <code>fne-config.yml</code>. Locate and configure these core settings within <code>fne-config.yml</code>. All other settings can be set to your preference.</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nt">log.filePath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/opt/dvm/log/fne/</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nt">log.activityFilePath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/opt/dvm/log/fne-activity/</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nt">master.peerId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1234567</span><span class="w"> </span><span class="c1"># Change this to something unique, this is your FNE Peer ID</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="nt">master.password</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">00AABBCCDDEEFF112233445566778899</span><span class="w"> </span><span class="c1"># Change this to something secure</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="nt">master.allowDMRTraffic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="nt">master.allowP25Traffic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="nt">master.allowNXDNTraffic</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="nt">master.parrotGrantDemand</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="nt">parrotOnlyToOrginiatingPeer</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># This typo is present in the release config.</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="nt">master.talkgroup_rules.file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/opt/dvm/rules/talkgroup_rules.yml</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a><span class="nt">system.radio_id.file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/opt/dvm/rules/rid_acl.dat</span>
+</span></code></pre></div>
+</li>
+<li>
+<p>Make a copy of the base rules &amp; peer list.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/rid_acl.example.dat<span class="w"> </span>/opt/dvm/rules/rid_acl.dat
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/talkgroup_rules.example.yml<span class="w"> </span>/opt/dvm/rules/talkgroup_rules.yml
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/peer_list.example.dat<span class="w"> </span>/opt/dvm/rules/peer_list.dat
+</span></code></pre></div>
+</li>
+<li>
+<p>Populate <code>peer_list.dat</code>. This file controls which hotspots (peers) are able to connect to this FNE.</p>
+<p>Example <code>peer_list.dat</code> (minimal configuration):</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>#
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a># Digital Voice Modem - Peer ID Access Control List
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>#
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a># This file sets the valid peer IDs allowed on a FNE. This file should always end with an empty line!
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>#
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>#   * PEER ID           [REQUIRED]  - Unique ID for a peer.
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>#                                       Peer IDs are valid numbers between 1 and 999999999.
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>#   * PEER PASSWORD     [REQUIRED]  - Unique password for this peer to use when authenticating.
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>#   * PEER REPLICATION  [OPTIONAL]  - Flag indicating whether or not the peer connection is another FNE and will receive
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>#                                       full configuration from this FNE. When peer replication is set, and the connection is
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>#                                       another FNE, that FNE will receive all the talkgroups, radio ID lists, and
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>#                                       peer lists from this FNE, it will also receive all system traffic.
+</span><span id="__span-16-13"><a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>#   * PEER ALIAS        [OPTIONAL]  - Textual name alias for the peer.
+</span><span id="__span-16-14"><a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>#   * CAN REQUEST KEYS  [OPTIONAL]  - Flag indicating the peer connection is allowed to request encryption keys.
+</span><span id="__span-16-15"><a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>#                                       If this flag is disabled (0), and the connected peer requests and encryption key
+</span><span id="__span-16-16"><a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>#                                       the encryption key request will be dropped and ignored.
+</span><span id="__span-16-17"><a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>#   * CAN ISSUE INHIBIT [OPTIONAL]  - Flag indicating the peer connection is capable of transmitting inhibit packets.
+</span><span id="__span-16-18"><a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>#                                       If this flag is disabled (0), and the connected peer issues an inhibit to the network
+</span><span id="__span-16-19"><a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>#                                       this FNE will drop the packet and ignore it.
+</span><span id="__span-16-20"><a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>#   * HAS CALL PRIORITY [OPTIONAL]  - Flag indicating the peer connection has call priority.
+</span><span id="__span-16-21"><a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>#                                       If this flag is disabled (0), and the connected peer tries to transmit over an on going
+</span><span id="__span-16-22"><a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a>#                                       call, normal call collision rules are applied to the traffic being transmitted.
+</span><span id="__span-16-23"><a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>#                                       If this flag is enabled (1), and the connected peer tries to transmit over an on going
+</span><span id="__span-16-24"><a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>#                                       call, call collision rules are ignored, and the peer is given priority.
+</span><span id="__span-16-25"><a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a>#   * JITTER ENABLED    [OPTIONAL] - Flag indicating whether the adaptive jitter buffer is enabled.
+</span><span id="__span-16-26"><a id="__codelineno-16-26" name="__codelineno-16-26" href="#__codelineno-16-26"></a>#   * JITTER MAX FRAMES [OPTIONAL] - Maximum buffer size in frames (range: 2-8 frames).
+</span><span id="__span-16-27"><a id="__codelineno-16-27" name="__codelineno-16-27" href="#__codelineno-16-27"></a>#   * JITTER MAX WAIT   [OPTIONAL] - Maximum wait time in microseconds (range: 10000-200000 us).
+</span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a>#
+</span><span id="__span-16-29"><a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a># Entry Format: &quot;Peer ID,Peer Password,Peer Replication (1 = Enabled / 0 = Disabled),Peer Alias (optional),Can Request Keys (1 = Enabled / 0 = Disabled),Can Issue Inhibit (1 = Enabled / 0 = Disabled),Has Call Priority (1 = Enabled / 0 = Disabled),Jitter Enabled (1 = Enabled / 0 = Disabled),Jitter Max Size, Jitter Max Wait&lt;newline&gt;&quot;
+</span><span id="__span-16-30"><a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a># Examples:
+</span><span id="__span-16-31"><a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a>#100000,MYSECUREPASSWORD,
+</span></code></pre></div>
+</li>
+<li>
+<p>Populate <code>talkgroup_rules.yml</code>. Populate this file with the talkgroups that you would like to have present on your system.</p>
+<p>Example <code>talkgroup_rules.yml</code> (minimal config):</p>
+<div class="language-yaml highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nt">groupVoice</span><span class="p">:</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test Talkgroup 1</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a><span class="w">    </span><span class="nt">active</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="w">    </span><span class="nt">affiliated</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="w">    </span><span class="nt">parrot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test Talkgroup 1</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="w">  </span><span class="nt">source</span><span class="p">:</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="w">    </span><span class="nt">slot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="w">    </span><span class="nt">tgid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20000</span><span class="w"> </span><span class="c1"># Change this to your preferred talkgroup ID</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test Parrot 1</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="w">  </span><span class="nt">config</span><span class="p">:</span>
+</span><span id="__span-17-13"><a id="__codelineno-17-13" name="__codelineno-17-13" href="#__codelineno-17-13"></a><span class="w">    </span><span class="nt">active</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><span id="__span-17-14"><a id="__codelineno-17-14" name="__codelineno-17-14" href="#__codelineno-17-14"></a><span class="w">    </span><span class="nt">affiliated</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
+</span><span id="__span-17-15"><a id="__codelineno-17-15" name="__codelineno-17-15" href="#__codelineno-17-15"></a><span class="w">    </span><span class="nt">parrot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span><span class="w"> </span><span class="c1"># This enables this talkgroup to echo or &quot;parrot&quot; back the input transmission</span>
+</span><span id="__span-17-16"><a id="__codelineno-17-16" name="__codelineno-17-16" href="#__codelineno-17-16"></a><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test Parrot 1</span>
+</span><span id="__span-17-17"><a id="__codelineno-17-17" name="__codelineno-17-17" href="#__codelineno-17-17"></a><span class="w">  </span><span class="nt">source</span><span class="p">:</span>
+</span><span id="__span-17-18"><a id="__codelineno-17-18" name="__codelineno-17-18" href="#__codelineno-17-18"></a><span class="w">    </span><span class="nt">slot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</span><span id="__span-17-19"><a id="__codelineno-17-19" name="__codelineno-17-19" href="#__codelineno-17-19"></a><span class="w">    </span><span class="nt">tgid</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">20001</span><span class="w"> </span><span class="c1"># Change this to your preferred talkgroup ID</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><strong>Optional:</strong> Populate <code>rid_acl.dat</code> if you wish to restrict access by radio ID. This can always be configured later.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/rid_acl.dat
+</span></code></pre></div>
+<p>Example <code>rid_acl.dat</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>#
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a># Digital Voice Modem - Radio ID Access Control List
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>#
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a># This file sets the valid Radio IDs allowed on a repeater. This file should always end with an empty line!
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a>#
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>#   * RID               [REQUIRED] - Unique Radio ID.
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a>#   * ENABLED           [REQUIRED] - Flag indicating whether or not this radio ID entry is enabled and valid.
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a>#   * ALIAS             [OPTIONAL] - Textual string representing an alias for this radio ID entry.
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>#   * IP ADDRESS        [OPTIONAL] - IP Address assigned to this radio ID.
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>#
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a># Entry Format: &quot;RID,Enabled (1 = Enabled / 0 = Disabled),Optional Alias,Optional IP Address,&lt;newline&gt;&quot;
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a># Example:
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a>175999,1,User-A,
+</span></code></pre></div>
+</li>
+<li>
+<p>Start the <code>dvmfne</code> daemon.</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>sudo<span class="w"> </span>/opt/dvm/start-dvm-fne.sh<span class="w"> </span>fne-config.yml
 </span></code></pre></div>
 </li>
 </ol>
