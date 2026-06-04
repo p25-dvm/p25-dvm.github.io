@@ -297,10 +297,11 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     #
     # Entry Format: "Peer ID,Peer Password,Peer Replication (1 = Enabled / 0 = Disabled),Peer Alias (optional),Can Request Keys (1 = Enabled / 0 = Disabled),Can Issue Inhibit (1 = Enabled / 0 = Disabled),Has Call Priority (1 = Enabled / 0 = Disabled),Jitter Enabled (1 = Enabled / 0 = Disabled),Jitter Max Size, Jitter Max Wait<newline>"
     # Examples:
-    #100000,MYSECUREPASSWORD,
+    100000,MYSECUREPASSWORD,
     ```
 
-5. Populate `talkgroup_rules.yml`. Populate this file with the talkgroups that you would like to have present on your system.
+5. Populate `talkgroup_rules.yml`.
+    - Populate this file with the talkgroups that you would like to have present on your system.
 
     Example `talkgroup_rules.yml` (minimal config):
 
@@ -326,7 +327,8 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
         tgid: 20001 # Change this to your preferred talkgroup ID
     ```
 
-6. **Optional:** Populate `rid_acl.dat` if you wish to restrict access by radio ID. This can always be configured later.
+7. **Optional:** Populate `rid_acl.dat`
+    - This step is necessary if you wish to restrict access to your FNE by radio ID. This can always be configured later.
 
     ```bash
     sudo nano /opt/dvm/rules/rid_acl.dat
@@ -350,7 +352,7 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     175999,1,User-A,
     ```
 
-7. Start the `dvmfne` daemon.
+9. Start the `dvmfne` daemon.
 
     ```bash
     sudo /opt/dvm/start-dvm-fne.sh fne-config.yml
