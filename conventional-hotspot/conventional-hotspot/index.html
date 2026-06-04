@@ -1632,11 +1632,14 @@
 </span><span id="__span-16-28"><a id="__codelineno-16-28" name="__codelineno-16-28" href="#__codelineno-16-28"></a>#
 </span><span id="__span-16-29"><a id="__codelineno-16-29" name="__codelineno-16-29" href="#__codelineno-16-29"></a># Entry Format: &quot;Peer ID,Peer Password,Peer Replication (1 = Enabled / 0 = Disabled),Peer Alias (optional),Can Request Keys (1 = Enabled / 0 = Disabled),Can Issue Inhibit (1 = Enabled / 0 = Disabled),Has Call Priority (1 = Enabled / 0 = Disabled),Jitter Enabled (1 = Enabled / 0 = Disabled),Jitter Max Size, Jitter Max Wait&lt;newline&gt;&quot;
 </span><span id="__span-16-30"><a id="__codelineno-16-30" name="__codelineno-16-30" href="#__codelineno-16-30"></a># Examples:
-</span><span id="__span-16-31"><a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a>#100000,MYSECUREPASSWORD,
+</span><span id="__span-16-31"><a id="__codelineno-16-31" name="__codelineno-16-31" href="#__codelineno-16-31"></a>100000,MYSECUREPASSWORD,
 </span></code></pre></div>
 </li>
 <li>
-<p>Populate <code>talkgroup_rules.yml</code>. Populate this file with the talkgroups that you would like to have present on your system.</p>
+<p>Populate <code>talkgroup_rules.yml</code>.</p>
+<ul>
+<li>Populate this file with the talkgroups that you would like to have present on your system.</li>
+</ul>
 <p>Example <code>talkgroup_rules.yml</code> (minimal config):</p>
 <div class="language-yaml highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="nt">groupVoice</span><span class="p">:</span>
 </span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">alias</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Test Talkgroup 1</span>
@@ -1660,7 +1663,10 @@
 </span></code></pre></div>
 </li>
 <li>
-<p><strong>Optional:</strong> Populate <code>rid_acl.dat</code> if you wish to restrict access by radio ID. This can always be configured later.</p>
+<p><strong>Optional:</strong> Populate <code>rid_acl.dat</code></p>
+<ul>
+<li>This step is necessary if you wish to restrict access to your FNE by radio ID. This can always be configured later.</li>
+</ul>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/rid_acl.dat
 </span></code></pre></div>
 <p>Example <code>rid_acl.dat</code>:</p>
