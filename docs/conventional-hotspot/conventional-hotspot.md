@@ -1,17 +1,27 @@
 ## Conventional Hotspot Setup
 
+This guide will walk you through setting up and configuring a conventional P25 hotspot for use as a standalone network on either ham bands or your own FCC Part 90 license (encryption legal). This guide will not cover connecting into existing hobbyist systems such as NexCom, CTRS, etc.
+
+**This guide assumes the following:**
+
+- You are either a licensed ham radio operator or possess an FCC Part 90 business license.
+- You possess a basic knowledge of Debian based Linux distributions (Raspbian / Debian 12 Bookworm).
+- You have a basic knowledge of networking.
+- You possess the necessary hardware to program your radios.
+
 ### Hardware Requirements
 
-- **Compute:** A Raspberry Pi or similar compute device with power and storage. For supported devices see [hardware](https://p25-dvm.github.io/hardware/hardware/).
+- **Compute:** A dedicated machine that will serve as a "network core" running `dvmfne`. A VPS is highly recommended for always on availability. Hetzner, DigitalOcean, Amazon EC2 (Free Tier), are just some examples of budget friendly providers. You can, of course, use a dedicated Linux device or virtual machine on your own network to offset this cost.
+- **Compute:** A Raspberry Pi or similar compute device with power and storage that will serve as the physical hotspot running `dvmhost`. For supported devices see [hardware](https://p25-dvm.github.io/hardware/hardware/).
 - **Modem Hardware:** An MMDVM_HS_HAT_DUPLEX board. For supported devices see [hardware](https://p25-dvm.github.io/hardware/hardware/).
-  - **Optional:** If you do not wish to use the GPIO headers on a Raspberry Pi or you are using a non-Raspberry Pi compute device, you will need an MMDVM_HS_USB adapter.
+    - **Optional:** If you do not wish to use the GPIO headers on a Raspberry Pi or you are using a non-Raspberry Pi compute device, you will need an MMDVM_HS_USB adapter.
 
 ### Software Requirements
 
 - **Operating System:** Raspbian Pi OS (Legacy, 64-bit) / Debian 12 Bookworm (x86_64)
-  - **Note:** Raspbian 13 (Modern) / Debian 13 (Trixie) are unsupported at this time.
+    - **Note:** Raspbian 13 (Modern) / Debian 13 (Trixie) are unsupported at this time.
 - Internet Connection
-- SSH access to your compute
+- SSH access to all compute
 
 ## Initial Configuration
 
@@ -37,8 +47,8 @@
     ```
 
     - **Note:** These steps were taken from the [dvmhost GitHub repository](https://github.com/DVMProject/dvmhost) under the **Raspberry Pi Preparation Notes** section and updated to accommodate the Raspbian 12 file structure.
-      - `/boot/config.txt` → `/boot/firmware/config.txt`
-      - `/boot/cmdline.txt` → `/boot/firmware/cmdline.txt`
+        - `/boot/config.txt` → `/boot/firmware/config.txt`
+        - `/boot/cmdline.txt` → `/boot/firmware/cmdline.txt`
 
 ### Raspberry Pi (USB) / Debian 12
 
@@ -163,4 +173,185 @@ Now that your compute is properly set up and your modem has been successfully de
     [INFO] Setting BOOT0 low (GPIO20)...
     [INFO] Resetting MCU to boot from flash...
     [SUCCESS] Flashing complete and STM32 restarted successfully.
+    ```
+
+### MMDVM_HS_USB (USB Method)
+
+COMING SOON
+
+## DVM Configuration
+
+The next sections will cover the configuration of `dvmfne` and `dvmhost`. These are the two software components that are required for a functional P25 hotspot.
+
+#### What is dvmfne?
+
+**Q:** What is `dvmfne`?
+
+**A:** A network "core", that provides a central server for `dvmhost` instances to connect to and be networked with, allowing relay of traffic and other data between `dvmhost` instances and other `dvmfne` instances.
+
+- Source: [DVMProject GitHub](https://github.com/DVMProject/dvmhost)
+
+#### dvmfne Prerequisites
+
+1. A compute resource to run `dvmfne`. A VPS from one of the providers in the hardware requirements section is highly advised as it will always be available. This guide will feature a VPS running Debian 12 Bookworm.
+2. An open port on the compute resource for the downstream hotspots to connect to. 62031 is the default port.
+3. The `dvmfne` binary from the latest `dvmhost` release for your CPU architecture.
+    - The latest binaries can be found in the releases section of the [DVMProject GitHub](https://github.com/DVMProject/dvmhost).
+
+#### Connect To Your Compute and Download `dvmfne`
+
+1. Download the latest release from the [DVMProject GitHub](https://github.com/DVMProject/dvmhost).
+
+    ```bash
+    ssh user@remotevps
+
+    sudo mkdir /opt/dvm
+    cd /opt/
+    sudo wget [latest-dvmhost-release-for-your-cpu-architecture.tar.gz]
+    ```
+
+2. Extract and remove the downloaded archive.
+
+    ```bash
+    sudo tar zxvf [latest-dvmhost-release.tar.gz]
+
+    # Remove archive (optional)
+    sudo rm [latest-dvmhost-release.tar.gz]
+    ```
+
+3. Organize the `/opt/dvm` working directory. You are free to set your directories as you see fit, just be sure to update the downstream configuration files as they will reference the paths set forth by this guide.
+
+    ```bash
+    cd /opt/dvm/
+    sudo mkdir /opt/dvm/examples/
+    sudo mv /opt/dvm/*.example.* /opt/dvm/examples/
+    sudo mkdir -p /opt/dvm/log/fne/
+    sudo mkdir /opt/dvm/log/fne-activity
+    sudo mkdir /opt/dvm/rules/
+    ```
+
+#### Configure `dvmfne`
+
+1. Make a copy of the example `fne-config.yml` file.
+
+    ```bash
+    sudo cp /opt/dvm/examples/fne-config.example.yml /opt/dvm/fne-config.yml
+    ```
+
+2. Define the base settings for P25 functionality within `fne-config.yml`. Locate and configure these core settings within `fne-config.yml`. All other settings can be set to your preference.
+
+    ```yaml
+    log.filePath: /opt/dvm/log/fne/
+    log.activityFilePath: /opt/dvm/log/fne-activity/
+    master.peerId: 1234567 # Change this to something unique, this is your FNE Peer ID
+    master.password: 00AABBCCDDEEFF112233445566778899 # Change this to something secure
+    master.allowDMRTraffic: false
+    master.allowP25Traffic: true
+    master.allowNXDNTraffic: false
+    master.parrotGrantDemand: true
+    parrotOnlyToOrginiatingPeer: true # This typo is present in the release config.
+    master.talkgroup_rules.file: /opt/dvm/rules/talkgroup_rules.yml
+    system.radio_id.file: /opt/dvm/rules/rid_acl.dat
+    ```
+
+3. Make a copy of the base rules & peer list.
+
+    ```bash
+    sudo cp /opt/dvm/examples/rid_acl.example.dat /opt/dvm/rules/rid_acl.dat
+    sudo cp /opt/dvm/examples/talkgroup_rules.example.yml /opt/dvm/rules/talkgroup_rules.yml
+    sudo cp /opt/dvm/examples/peer_list.example.dat /opt/dvm/rules/peer_list.dat
+    ```
+
+4. Populate `peer_list.dat`. This file controls which hotspots (peers) are able to connect to this FNE.
+
+    Example `peer_list.dat` (minimal configuration):
+
+    ```
+    #
+    # Digital Voice Modem - Peer ID Access Control List
+    #
+    # This file sets the valid peer IDs allowed on a FNE. This file should always end with an empty line!
+    #
+    #   * PEER ID           [REQUIRED]  - Unique ID for a peer.
+    #                                       Peer IDs are valid numbers between 1 and 999999999.
+    #   * PEER PASSWORD     [REQUIRED]  - Unique password for this peer to use when authenticating.
+    #   * PEER REPLICATION  [OPTIONAL]  - Flag indicating whether or not the peer connection is another FNE and will receive
+    #                                       full configuration from this FNE. When peer replication is set, and the connection is
+    #                                       another FNE, that FNE will receive all the talkgroups, radio ID lists, and
+    #                                       peer lists from this FNE, it will also receive all system traffic.
+    #   * PEER ALIAS        [OPTIONAL]  - Textual name alias for the peer.
+    #   * CAN REQUEST KEYS  [OPTIONAL]  - Flag indicating the peer connection is allowed to request encryption keys.
+    #                                       If this flag is disabled (0), and the connected peer requests and encryption key
+    #                                       the encryption key request will be dropped and ignored.
+    #   * CAN ISSUE INHIBIT [OPTIONAL]  - Flag indicating the peer connection is capable of transmitting inhibit packets.
+    #                                       If this flag is disabled (0), and the connected peer issues an inhibit to the network
+    #                                       this FNE will drop the packet and ignore it.
+    #   * HAS CALL PRIORITY [OPTIONAL]  - Flag indicating the peer connection has call priority.
+    #                                       If this flag is disabled (0), and the connected peer tries to transmit over an on going
+    #                                       call, normal call collision rules are applied to the traffic being transmitted.
+    #                                       If this flag is enabled (1), and the connected peer tries to transmit over an on going
+    #                                       call, call collision rules are ignored, and the peer is given priority.
+    #   * JITTER ENABLED    [OPTIONAL] - Flag indicating whether the adaptive jitter buffer is enabled.
+    #   * JITTER MAX FRAMES [OPTIONAL] - Maximum buffer size in frames (range: 2-8 frames).
+    #   * JITTER MAX WAIT   [OPTIONAL] - Maximum wait time in microseconds (range: 10000-200000 us).
+    #
+    # Entry Format: "Peer ID,Peer Password,Peer Replication (1 = Enabled / 0 = Disabled),Peer Alias (optional),Can Request Keys (1 = Enabled / 0 = Disabled),Can Issue Inhibit (1 = Enabled / 0 = Disabled),Has Call Priority (1 = Enabled / 0 = Disabled),Jitter Enabled (1 = Enabled / 0 = Disabled),Jitter Max Size, Jitter Max Wait<newline>"
+    # Examples:
+    #100000,MYSECUREPASSWORD,
+    ```
+
+5. Populate `talkgroup_rules.yml`. Populate this file with the talkgroups that you would like to have present on your system.
+
+    Example `talkgroup_rules.yml` (minimal config):
+
+    ```yaml
+    groupVoice:
+    - alias: Test Talkgroup 1
+      config:
+        active: true
+        affiliated: false
+        parrot: false
+      name: Test Talkgroup 1
+      source:
+        slot: 1
+        tgid: 20000 # Change this to your preferred talkgroup ID
+    - alias: Test Parrot 1
+      config:
+        active: true
+        affiliated: false
+        parrot: true # This enables this talkgroup to echo or "parrot" back the input transmission
+      name: Test Parrot 1
+      source:
+        slot: 1
+        tgid: 20001 # Change this to your preferred talkgroup ID
+    ```
+
+6. **Optional:** Populate `rid_acl.dat` if you wish to restrict access by radio ID. This can always be configured later.
+
+    ```bash
+    sudo nano /opt/dvm/rules/rid_acl.dat
+    ```
+
+    Example `rid_acl.dat`:
+
+    ```
+    #
+    # Digital Voice Modem - Radio ID Access Control List
+    #
+    # This file sets the valid Radio IDs allowed on a repeater. This file should always end with an empty line!
+    #
+    #   * RID               [REQUIRED] - Unique Radio ID.
+    #   * ENABLED           [REQUIRED] - Flag indicating whether or not this radio ID entry is enabled and valid.
+    #   * ALIAS             [OPTIONAL] - Textual string representing an alias for this radio ID entry.
+    #   * IP ADDRESS        [OPTIONAL] - IP Address assigned to this radio ID.
+    #
+    # Entry Format: "RID,Enabled (1 = Enabled / 0 = Disabled),Optional Alias,Optional IP Address,<newline>"
+    # Example:
+    175999,1,User-A,
+    ```
+
+7. Start the `dvmfne` daemon.
+
+    ```bash
+    sudo /opt/dvm/start-dvm-fne.sh fne-config.yml
     ```
