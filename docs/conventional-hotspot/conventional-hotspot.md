@@ -183,7 +183,7 @@ COMING SOON
 
 The next sections will cover the configuration of `dvmfne` and `dvmhost`. These are the two software components that are required for a functional P25 hotspot.
 
-#### What is dvmfne?
+### What is dvmfne?
 
 **Q:** What is `dvmfne`?
 
@@ -191,14 +191,14 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
 
 - Source: [DVMProject GitHub](https://github.com/DVMProject/dvmhost)
 
-#### dvmfne Prerequisites
+### dvmfne Prerequisites
 
 1. A compute resource to run `dvmfne`. A VPS from one of the providers in the hardware requirements section is highly advised as it will always be available. This guide will feature a VPS running Debian 12 Bookworm.
 2. An open port on the compute resource for the downstream hotspots to connect to. 62031 is the default port.
 3. The `dvmfne` binary from the latest `dvmhost` release for your CPU architecture.
     - The latest binaries can be found in the releases section of the [DVMProject GitHub](https://github.com/DVMProject/dvmhost).
 
-#### Connect To Your Compute and Download `dvmfne`
+### Connect To Your Compute and Download `dvmfne`
 
 1. Download the latest release from the [DVMProject GitHub](https://github.com/DVMProject/dvmhost).
 
@@ -230,12 +230,13 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     sudo mkdir /opt/dvm/rules/
     ```
 
-#### Configure `dvmfne`
+### Configure `dvmfne`
 
-1. Make a copy of the example `fne-config.yml` file.
+1. Make a copy of the example `fne-config.yml` file for editing.
 
     ```bash
     sudo cp /opt/dvm/examples/fne-config.example.yml /opt/dvm/fne-config.yml
+    sudo nano /opt/dvm/fne-config.yml
     ```
 
 2. Define the base settings for P25 functionality within `fne-config.yml`. Locate and configure these core settings within `fne-config.yml`. All other settings can be set to your preference.
@@ -254,7 +255,7 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     system.radio_id.file: /opt/dvm/rules/rid_acl.dat
     ```
 
-3. Make a copy of the base rules & peer list.
+3. Make a copy of the base rules & peer list for editing.
 
     ```bash
     sudo cp /opt/dvm/examples/rid_acl.example.dat /opt/dvm/rules/rid_acl.dat
@@ -300,8 +301,7 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     100000,MYSECUREPASSWORD,
     ```
 
-5. Populate `talkgroup_rules.yml`.
-    - Populate this file with the talkgroups that you would like to have present on your system.
+5. Populate `talkgroup_rules.yml` with the talkgroups that you would like to have present on your system.
 
     Example `talkgroup_rules.yml` (minimal config):
 
@@ -327,8 +327,7 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
         tgid: 20001 # Change this to your preferred talkgroup ID
     ```
 
-7. **Optional:** Populate `rid_acl.dat`
-    - This step is necessary if you wish to restrict access to your FNE by radio ID. This can always be configured later.
+6. **Optional:** Populate `rid_acl.dat` if you wish to restrict access to your FNE by radio ID. This can always be configured later.
 
     ```bash
     sudo nano /opt/dvm/rules/rid_acl.dat
@@ -352,8 +351,176 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     175999,1,User-A,
     ```
 
-9. Start the `dvmfne` daemon.
+7. Start the `dvmfne` daemon.
 
     ```bash
     sudo /opt/dvm/start-dvm-fne.sh fne-config.yml
+    ```
+
+## dvmhost Configuration
+
+### What is dvmhost?
+
+**Q:** What is `dvmhost`?
+
+**A:** Host software that connects to the modem (both air interface for repeater and hotspot or P25 DFSI for commercial P25 hardware) and is the primary data processing application for digital modes.
+
+- Source: [DVMProject GitHub](https://github.com/DVMProject/dvmhost)
+
+### dvmhost Prerequisites
+
+1. A compute resource to run `dvmhost`. This guide will assume your hotspot is running on a Raspberry Pi as that is a common configuration for portability. You can, of course, also use a dedicated Debian 12 Bookworm device.
+2. No `iptables` or other firewall rules currently exist on the compute device.
+3. The `dvmhost` binary from the latest `dvmhost` release for your CPU architecture.
+    - The latest binaries can be found in the releases section of the [DVMProject GitHub](https://github.com/DVMProject/dvmhost).
+
+### Connect To Your Compute and Download `dvmhost`
+
+1. Download the latest release from the [DVMProject GitHub](https://github.com/DVMProject/dvmhost).
+
+    ```bash
+    ssh user@raspberrypi
+
+    sudo mkdir /opt/dvm
+    cd /opt/
+    sudo wget [latest-dvmhost-release-for-your-cpu-architecture.tar.gz]
+    ```
+
+2. Extract and remove the downloaded archive.
+
+    ```bash
+    sudo tar zxvf [latest-dvmhost-release.tar.gz]
+
+    # Remove archive (optional)
+    sudo rm [latest-dvmhost-release.tar.gz]
+    ```
+
+3. Organize the `/opt/dvm` working directory. You are free to set your directories as you see fit, just be sure to update the downstream configuration files as they will reference the paths set forth by this guide.
+
+    ```bash
+    cd /opt/dvm/
+    sudo mkdir /opt/dvm/examples/
+    sudo mv /opt/dvm/*.example.* /opt/dvm/examples/
+    sudo mkdir /opt/dvm/log/host/
+    sudo mkdir /opt/dvm/rules/
+    ```
+
+### Configure `dvmhost`
+
+1. Copy the example `ident_table.dat` file and configure it for your frequency range. This guide is going to focus on the UHF R2 range as this will cover FCC Part 90 itinerant frequencies where encryption is legal.
+
+    ```bash
+    sudo cp /opt/dvm/examples/iden_table.example.dat /opt/dvm/rules/iden_table.dat
+    sudo nano /opt/dvm/rules/iden_table.dat
+    ```
+
+    Example `iden_table.dat` (unused base frequencies commented out):
+
+    ```
+    #
+    # This file sets the valid bandplan identity table.
+    # (It is recommended to use the included iden_channel_calc.py Python script
+    # to generate entries for this file.)
+    #
+    # ChId,Base Freq,Spacing (khz),Input Offset (mhz),Bandwidth (khz),<newline>
+    #0,851006250,6.25,-45.000,12.5,
+    #1,762006250,6.25,30.000,12.5,
+    #15,935001250,6.25,-39.00000,12.5,
+    2,450000000,6.25,5.000,12.5,
+    #3,146000000,6.25,1.000,12.5,
+    ```
+
+2. Calculate the frequency pair that will be used for your primary voice channel.
+
+    - Navigate to: https://dvmproject.io/iden-calc-web/
+    - Enter the appropriate values into each of the following fields:
+        - **Downlink Frequency (MHz):** The frequency on which the hotspot will receive transmissions.
+        - **Base Frequency (MHz):** A starting or reference frequency for a specific block or range of channels within the P25 system's frequency plan. Used in a formula, along with the **Channel ID** and **Spacing**, to calculate the specific frequency for a given channel.
+        - **Spacing (kHz):** The separation between the center frequencies of adjacent channels, often called the channel step or channel raster. Typically measured in kilohertz (kHz) (e.g., 12.5 kHz, **6.25 kHz for P25**). This value is crucial for calculating the exact frequency of a channel based on its ID and the base frequency.
+        - **Offset (MHz):** The standard frequency difference between the uplink and downlink frequencies for a repeater channel pair in a specific band (e.g., +5 MHz or -5 MHz). Ensures that radios transmit on one frequency and receive on another, allowing for simultaneous transmission and reception through a repeater.
+        - **Channel (dec):** A numerical identifier for a specific radio channel within the P25 system. This **decimal value** is used in a formula with the **Base Frequency** and **Spacing** to determine the precise operational frequency (often the **downlink**) for that channel.
+        - **Uplink Frequency (MHz):** Calculated automatically.
+
+3. Make a copy of the example `config.yml` file for editing.
+
+    ```bash
+    sudo cp /opt/dvm/examples/config.example.yml /opt/dvm/config.yml
+    sudo nano /opt/dvm/config.yml
+    ```
+
+4. Define the base settings for P25 functionality within `config.yml`. Locate and configure these core settings within `config.yml`. All other settings can be set to your preference.
+
+    ```yaml
+    log.displayLevel: 1
+    log.filepath: /opt/dvm/log/host/
+    log.fileRoot: host
+    network.address: [ADDRESS-OF-FNE]
+    network.id: [6-DIGIT-ID-OF-HOTSPOT]
+    network.password: [PASSWORD-FROM-FNE-CONFIG.YML-ON-FNE]
+    system.identity: MYHOTSPOT
+    protocols.dmr.enable: false
+    protocols.nxdn.enable: false
+    protocols.p25.enable: true
+    system.modem.protocol.type: uart
+    system.modem.protocol.mode: air
+    system.modem.protocol.uart.port: /dev/ttyAMA0 # /dev/ttyUSB0 if you are using the MMDVM_HS_USB hat
+    system.modem.protocol.uart.speed: 115200
+    system.config.channelId: [CHANNEL-ENTRY-FROM-IDEN_TABLE.DAT] # 2 if you are using the UHF R2 band mentioned earlier
+    system.config.channelNo: [VALUE-CALCULATED-FROM-IDEN-CALC-WEB]
+    system.config.voiceChNo.channelId: 2
+    system.config.voiceChNo.channelNo: [HEX-VALUE-CALCULATED-FROM-IDEN-CALC-WEB]
+    system.config.iden_table.file: /opt/dvm/rules/iden_table.dat
+    ```
+
+5. Connect to the modem to verify your settings.
+
+    ```bash
+    sudo /opt/dvm/dvmhost -c /opt/dvm/config.yml --setup
+    ```
+
+    - Press **F8** — the modem should initialize and connect successfully. If it does not, check your connections. This is also where alignment would take place if necessary. Alignment is generally needed if the hotspot does not activate when receiving a transmission from a subscriber radio. For assistance tuning your modem please refer to the calibration section.
+    - Press **F2** — this will save your current settings and "flatten" your `config.yml` file, removing any comments.
+    - Press **F3** — this will return you to the console.
+
+    - **Note:** Due to the length of a finalized `config.yml`, it will not be included inline. Click here to view it on GitHub.
+
+6. Start the `dvmhost` process as a daemon and verify your process is running.
+
+    ```bash
+    sudo /opt/dvm/start-dvm.sh /opt/dvm/config.yml
+    ps aux | grep dvmhost
+    ```
+
+    - **Note:** If you do not see a `dvmhost` process running, review `/opt/dvm/log/host-CURRENT-DATE.log` for details.
+
+7. Create a `dvmhost` system service.
+
+    ```bash
+    sudo nano /etc/systemd/system/dvmhost.service
+    ```
+
+    Example `dvmhost.service`:
+
+    ```
+    [Unit]
+    Description=dvmhost
+    After=network.target
+
+    [Service]
+    ExecStart=/opt/dvm/bin/dvmhost -c /opt/dvm/config.yml -f
+    User=root
+    Type=forking
+    Restart=on-abnormal
+    TimeoutSec=infinity
+
+    [Install]
+    WantedBy=multi-user.target
+    ```
+
+8. Enable the `dvmhost` service to start at system boot.
+
+    ```bash
+    sudo systemctl daemon-reload
+    sudo systemctl enable dvmhost.service
+    sudo systemctl start dvmhost.service
     ```
