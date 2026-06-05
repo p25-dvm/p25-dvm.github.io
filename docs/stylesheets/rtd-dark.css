@@ -37,6 +37,11 @@ body,
   color: var(--rtd-text) !important;
 }
 
+/* Hide the "Edit on ..." link */
+.wy-breadcrumbs-aside {
+  display: none !important;
+}
+
 /* ── Left sidebar ── */
 .wy-nav-side {
   background: var(--rtd-sidebar) !important;
