@@ -17,7 +17,7 @@
   --rtd-heading:     #e4e8ee;
   --rtd-link:        #5a9fd4;    /* RTD's signature blue, lightened */
   --rtd-link-hover:  #7bb8e8;
-  --rtd-code-text:   #d68c67;    /* inline code */
+  --rtd-code-text:   #c9a88a;    /* inline code — muted tan, softer than orange */
   --rtd-admon-bg:    #20242a;
 }
 
@@ -156,27 +156,44 @@ code {
 }
 
 /* ── Code blocks ── */
-.rst-content pre,
-.highlight,
-.highlight pre {
+/* Outer wrapper carries the single border; inner elements are borderless
+   so there's no double "box within a box" outline. */
+.rst-content div[class^="highlight"],
+.rst-content pre.literal-block {
   background: var(--rtd-bg-alt) !important;
   border: 1px solid var(--rtd-border) !important;
   border-radius: 4px;
 }
 
+.highlight,
 .highlight pre,
-.rst-content .highlight pre {
+.rst-content .highlight,
+.rst-content .highlight pre,
+.rst-content pre {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
   color: var(--rtd-text) !important;
 }
 
-/* Syntax highlighting tokens */
-.highlight .c, .highlight .c1, .highlight .cm { color: #6a7280 !important; } /* comments */
-.highlight .k, .highlight .kn, .highlight .kd { color: #c191dd !important; } /* keywords */
-.highlight .s, .highlight .s1, .highlight .s2 { color: #b5cea8 !important; } /* strings */
-.highlight .nf, .highlight .nb               { color: #7bb8e8 !important; } /* functions */
-.highlight .mi, .highlight .mf               { color: #e8a87c !important; } /* numbers */
-.highlight .nv, .highlight .vi               { color: #d68c67 !important; } /* variables */
-.highlight .o,  .highlight .ow               { color: #c3c8d0 !important; } /* operators */
+/* Syntax highlighting — muted grey-based palette for readability.
+   Plain console output (the common case here) stays light grey;
+   only a few token types get a subtle, low-saturation tint. */
+.highlight .c, .highlight .c1, .highlight .cm,
+.highlight .cp, .highlight .cs              { color: #6f767f !important; } /* comments */
+.highlight .k, .highlight .kn, .highlight .kd,
+.highlight .kc, .highlight .kr, .highlight .kt { color: #b8bec8 !important; font-weight: 600; } /* keywords */
+.highlight .s, .highlight .s1, .highlight .s2,
+.highlight .sb, .highlight .sc, .highlight .sd { color: #9db4a0 !important; } /* strings — soft sage */
+.highlight .nf, .highlight .nb, .highlight .nc { color: #aebfd0 !important; } /* functions/builtins — soft slate blue */
+.highlight .mi, .highlight .mf, .highlight .mh,
+.highlight .mo, .highlight .il               { color: #c9b89a !important; } /* numbers — soft tan */
+.highlight .nv, .highlight .vi, .highlight .vg { color: #c3c8d0 !important; } /* variables */
+.highlight .o,  .highlight .ow, .highlight .p { color: #c3c8d0 !important; } /* operators/punctuation */
+.highlight .nt                                { color: #aebfd0 !important; } /* HTML/XML tags */
+.highlight .na                                { color: #b8bec8 !important; } /* attributes */
+/* Everything else (generic output text) defaults to the main text grey */
+.highlight .n, .highlight .nn, .highlight .nx { color: var(--rtd-text) !important; }
 
 /* ── Tables ── */
 .rst-content table.docutils,
