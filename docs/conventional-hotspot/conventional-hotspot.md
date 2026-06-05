@@ -1,4 +1,4 @@
-## Conventional Hotspot Setup
+# Conventional Hotspot Setup
 
 This guide will walk you through setting up and configuring a conventional P25 hotspot for use as a standalone network on either ham bands or your own FCC Part 90 license (encryption legal). This guide will not cover connecting into existing hobbyist systems such as NexCom, CTRS, etc.
 
