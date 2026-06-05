@@ -29,8 +29,8 @@ nav:
   - Hotspots:
       - Conventional Hotspot: conventional-hotspot/conventional-hotspot.md
       - Trunking Hotspot: trunking-hotspot/trunking-hotspot.md
-  - Traditional RF Site:
-      - Motorola CDM1250 Site: traditional-rf-site/motorola-cdm1250-site.md
+  - Traditional RF Sites:
+      - Motorola CDM1250 P25 Repeater: traditional-rf-site/motorola-cdm1250-site.md
   - Reference:
       - Frequently Asked Questions: reference/faq.md
       - Common Errors: reference/common-errors.md
