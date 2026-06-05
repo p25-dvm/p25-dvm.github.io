@@ -355,3 +355,12 @@ code, pre, .md-typeset code {
   display: inline;
   color: var(--dr-text-faint);
 }
+
+/* ── Fix sidebar z-index overlap ── */
+.md-sidebar {
+  z-index: 10 !important;
+}
+
+.md-sidebar--secondary {
+  z-index: 9 !important;
+}
