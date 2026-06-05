@@ -120,7 +120,7 @@ code, pre, .md-typeset code {
 
 /* ── Sidebar ── */
 .md-sidebar {
-  background: var(--dr-bg-alt) !important;
+  background: var(--dr-bg) !important;
 }
 
 .md-nav__title {
