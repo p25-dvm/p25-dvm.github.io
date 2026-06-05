@@ -157,7 +157,11 @@ code {
 
 /* ── Code blocks ── */
 /* Outer wrapper carries the single border; inner elements are borderless
-   so there's no double "box within a box" outline. */
+   so there's no double "box within a box" outline.
+   NOTE: selectors are prefixed with .rst-content (and doubled) to outrank
+   the RTD theme's own Pygments stylesheet, which loads after this file and
+   uses .rst-content-scoped selectors. !important alone is not enough —
+   specificity breaks the tie. */
 .rst-content div[class^="highlight"],
 .rst-content pre.literal-block {
   background: var(--rtd-bg-alt) !important;
@@ -165,10 +169,9 @@ code {
   border-radius: 4px;
 }
 
-.highlight,
-.highlight pre,
 .rst-content .highlight,
 .rst-content .highlight pre,
+.rst-content div[class^="highlight"] pre,
 .rst-content pre {
   background: transparent !important;
   border: none !important;
@@ -178,22 +181,72 @@ code {
 
 /* Syntax highlighting — muted grey-based palette for readability.
    Plain console output (the common case here) stays light grey;
-   only a few token types get a subtle, low-saturation tint. */
-.highlight .c, .highlight .c1, .highlight .cm,
-.highlight .cp, .highlight .cs              { color: #6f767f !important; } /* comments */
-.highlight .k, .highlight .kn, .highlight .kd,
-.highlight .kc, .highlight .kr, .highlight .kt { color: #b8bec8 !important; font-weight: 600; } /* keywords */
-.highlight .s, .highlight .s1, .highlight .s2,
-.highlight .sb, .highlight .sc, .highlight .sd { color: #9db4a0 !important; } /* strings — soft sage */
-.highlight .nf, .highlight .nb, .highlight .nc { color: #aebfd0 !important; } /* functions/builtins — soft slate blue */
-.highlight .mi, .highlight .mf, .highlight .mh,
-.highlight .mo, .highlight .il               { color: #c9b89a !important; } /* numbers — soft tan */
-.highlight .nv, .highlight .vi, .highlight .vg { color: #c3c8d0 !important; } /* variables */
-.highlight .o,  .highlight .ow, .highlight .p { color: #c3c8d0 !important; } /* operators/punctuation */
-.highlight .nt                                { color: #aebfd0 !important; } /* HTML/XML tags */
-.highlight .na                                { color: #b8bec8 !important; } /* attributes */
-/* Everything else (generic output text) defaults to the main text grey */
-.highlight .n, .highlight .nn, .highlight .nx { color: var(--rtd-text) !important; }
+   only a few token types get a subtle, low-saturation tint.
+   Double .rst-content.rst-content prefix raises specificity above the
+   theme's bundled Pygments rules. */
+.rst-content.rst-content .highlight .c,
+.rst-content.rst-content .highlight .c1,
+.rst-content.rst-content .highlight .cm,
+.rst-content.rst-content .highlight .cp,
+.rst-content.rst-content .highlight .cs   { color: #6f767f !important; } /* comments */
+
+.rst-content.rst-content .highlight .k,
+.rst-content.rst-content .highlight .kn,
+.rst-content.rst-content .highlight .kd,
+.rst-content.rst-content .highlight .kc,
+.rst-content.rst-content .highlight .kr,
+.rst-content.rst-content .highlight .kt   { color: #b8bec8 !important; font-weight: 600; } /* keywords */
+
+.rst-content.rst-content .highlight .s,
+.rst-content.rst-content .highlight .s1,
+.rst-content.rst-content .highlight .s2,
+.rst-content.rst-content .highlight .sb,
+.rst-content.rst-content .highlight .sc,
+.rst-content.rst-content .highlight .sd   { color: #9db4a0 !important; } /* strings — soft sage */
+
+.rst-content.rst-content .highlight .nf,
+.rst-content.rst-content .highlight .nb,
+.rst-content.rst-content .highlight .nc   { color: #aebfd0 !important; } /* functions/builtins — soft slate blue */
+
+.rst-content.rst-content .highlight .mi,
+.rst-content.rst-content .highlight .mf,
+.rst-content.rst-content .highlight .mh,
+.rst-content.rst-content .highlight .mo,
+.rst-content.rst-content .highlight .il   { color: #c9b89a !important; } /* numbers — soft tan */
+
+.rst-content.rst-content .highlight .nv,
+.rst-content.rst-content .highlight .vi,
+.rst-content.rst-content .highlight .vg   { color: #c3c8d0 !important; } /* variables */
+
+.rst-content.rst-content .highlight .o,
+.rst-content.rst-content .highlight .ow,
+.rst-content.rst-content .highlight .p    { color: #c3c8d0 !important; } /* operators/punctuation */
+
+.rst-content.rst-content .highlight .nt   { color: #aebfd0 !important; } /* HTML/XML tags */
+.rst-content.rst-content .highlight .na   { color: #b8bec8 !important; } /* attributes */
+
+/* Everything else (generic output text, names, plain tokens) → main grey.
+   The .highlight span catch-all keeps un-tagged console output readable. */
+.rst-content.rst-content .highlight .n,
+.rst-content.rst-content .highlight .nn,
+.rst-content.rst-content .highlight .nx,
+.rst-content.rst-content .highlight .nl,
+.rst-content.rst-content .highlight .w,
+.rst-content.rst-content .highlight span { color: var(--rtd-text) !important; }
+
+/* Re-apply the tinted tokens AFTER the catch-all so they aren't flattened.
+   Source order + equal specificity means later wins. */
+.rst-content.rst-content .highlight .c,
+.rst-content.rst-content .highlight .c1,
+.rst-content.rst-content .highlight .cm   { color: #6f767f !important; }
+.rst-content.rst-content .highlight .k,
+.rst-content.rst-content .highlight .kn,
+.rst-content.rst-content .highlight .kd   { color: #b8bec8 !important; }
+.rst-content.rst-content .highlight .s,
+.rst-content.rst-content .highlight .s1,
+.rst-content.rst-content .highlight .s2   { color: #9db4a0 !important; }
+.rst-content.rst-content .highlight .mi,
+.rst-content.rst-content .highlight .mf   { color: #c9b89a !important; }
 
 /* ── Tables ── */
 .rst-content table.docutils,
