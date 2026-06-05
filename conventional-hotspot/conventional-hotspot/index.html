@@ -64,6 +64,46 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#software-requirements">Software Requirements</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#initial-compute-configuration">Initial Compute Configuration</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#raspberry-pi-gpio">Raspberry Pi (GPIO)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#raspberry-pi-usb-debian-12">Raspberry Pi (USB) / Debian 12</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#flashing-the-dvm-firmware">Flashing the DVM Firmware</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#hsflashez-gpio-method">HSFlashEZ (GPIO Method)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#mmdvm_hs_usb-usb-method">MMDVM_HS_USB (USB Method)</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#dvmfne-configuration">dvmfne Configuration</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#what-is-dvmfne">What is dvmfne?</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#dvmfne-prerequisites">dvmfne Prerequisites</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#connect-to-your-compute-and-download-dvmfne">Connect To Your Compute and Download dvmfne</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configure-dvmfne">Configure dvmfne</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#dvmhost-configuration">dvmhost Configuration</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#what-is-dvmhost">What is dvmhost?</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#dvmhost-prerequisites">dvmhost Prerequisites</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#connect-to-your-compute-and-download-dvmhost">Connect To Your Compute and Download dvmhost</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#configure-dvmhost">Configure dvmhost</a>
+    </li>
+        </ul>
+    </li>
     </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../../trunking-hotspot/trunking-hotspot/">Trunking Hotspot</a>
@@ -108,7 +148,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h2 id="conventional-hotspot-setup">Conventional Hotspot Setup</h2>
+                <h1 id="conventional-hotspot-setup">Conventional Hotspot Setup</h1>
 <p>This guide will walk you through setting up and configuring a conventional P25 hotspot for use as a standalone network on either ham bands or your own FCC Part 90 license (encryption legal). This guide will not cover connecting into existing hobbyist systems such as NexCom, CTRS, etc.</p>
 <p><strong>This guide assumes the following:</strong></p>
 <ul>
