@@ -239,23 +239,17 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     sudo nano /opt/dvm/fne-config.yml
     ```
 
-2. Define the base settings for P25 functionality within `fne-config.yml`. Locate and configure these core settings within `fne-config.yml`. All other settings can be set to your preference.
+2. Define the base settings for P25 functionality within `fne-config.yml`. At minimum locate and configure these core settings marked in green on the comparison listed below within `fne-config.yml`. All other settings can be set to your preference. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.
 
-    ```yaml
-    log.filePath: /opt/dvm/log/fne/
-    log.activityFilePath: /opt/dvm/log/fne-activity/
-    master.peerId: 1234567 # Change this to something unique, this is your FNE Peer ID
-    master.password: 00AABBCCDDEEFF112233445566778899 # Change this to something secure
-    master.allowDMRTraffic: false
-    master.allowP25Traffic: true
-    master.allowNXDNTraffic: false
-    master.parrotGrantDemand: true
-    parrotOnlyToOrginiatingPeer: true # This typo is present in the release config.
-    master.talkgroup_rules.file: /opt/dvm/rules/talkgroup_rules.yml
-    system.radio_id.file: /opt/dvm/rules/rid_acl.dat
+    ```bash
+    sudo nano /opt/dvm/fne-config.yml
     ```
+    
+    - Completed Example: [fne-config.yml](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/fne-config.yml)
+    - Base Example: [fne-config.yml](https://github.com/DVMProject/dvmhost/blob/master/configs/fne-config.example.yml)
+    - Comparison: [fne-config.yml](https://www.diffchecker.com/NXQRz3Rs/)
 
-3. Make a copy of the base rules & peer list for editing.
+3. Make a copy of the base rules, acls, and peer list for editing.
 
     ```bash
     sudo cp /opt/dvm/examples/rid_acl.example.dat /opt/dvm/rules/rid_acl.dat
@@ -263,95 +257,38 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     sudo cp /opt/dvm/examples/peer_list.example.dat /opt/dvm/rules/peer_list.dat
     ```
 
-4. Populate `peer_list.dat`. This file controls which hotspots (peers) are able to connect to this FNE.
+4. Define the peers that will be allowed to connect to your FNE within `peer_list.dat`. This file controls which hotspots (peers) are able to connect to this FNE. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.
 
-    Example `peer_list.dat` (minimal configuration):
-
+    ```bash
+    sudo nano /opt/dvm/rules/peer_list.dat
     ```
-    #
-    # Digital Voice Modem - Peer ID Access Control List
-    #
-    # This file sets the valid peer IDs allowed on a FNE. This file should always end with an empty line!
-    #
-    #   * PEER ID           [REQUIRED]  - Unique ID for a peer.
-    #                                       Peer IDs are valid numbers between 1 and 999999999.
-    #   * PEER PASSWORD     [REQUIRED]  - Unique password for this peer to use when authenticating.
-    #   * PEER REPLICATION  [OPTIONAL]  - Flag indicating whether or not the peer connection is another FNE and will receive
-    #                                       full configuration from this FNE. When peer replication is set, and the connection is
-    #                                       another FNE, that FNE will receive all the talkgroups, radio ID lists, and
-    #                                       peer lists from this FNE, it will also receive all system traffic.
-    #   * PEER ALIAS        [OPTIONAL]  - Textual name alias for the peer.
-    #   * CAN REQUEST KEYS  [OPTIONAL]  - Flag indicating the peer connection is allowed to request encryption keys.
-    #                                       If this flag is disabled (0), and the connected peer requests and encryption key
-    #                                       the encryption key request will be dropped and ignored.
-    #   * CAN ISSUE INHIBIT [OPTIONAL]  - Flag indicating the peer connection is capable of transmitting inhibit packets.
-    #                                       If this flag is disabled (0), and the connected peer issues an inhibit to the network
-    #                                       this FNE will drop the packet and ignore it.
-    #   * HAS CALL PRIORITY [OPTIONAL]  - Flag indicating the peer connection has call priority.
-    #                                       If this flag is disabled (0), and the connected peer tries to transmit over an on going
-    #                                       call, normal call collision rules are applied to the traffic being transmitted.
-    #                                       If this flag is enabled (1), and the connected peer tries to transmit over an on going
-    #                                       call, call collision rules are ignored, and the peer is given priority.
-    #   * JITTER ENABLED    [OPTIONAL] - Flag indicating whether the adaptive jitter buffer is enabled.
-    #   * JITTER MAX FRAMES [OPTIONAL] - Maximum buffer size in frames (range: 2-8 frames).
-    #   * JITTER MAX WAIT   [OPTIONAL] - Maximum wait time in microseconds (range: 10000-200000 us).
-    #
-    # Entry Format: "Peer ID,Peer Password,Peer Replication (1 = Enabled / 0 = Disabled),Peer Alias (optional),Can Request Keys (1 = Enabled / 0 = Disabled),Can Issue Inhibit (1 = Enabled / 0 = Disabled),Has Call Priority (1 = Enabled / 0 = Disabled),Jitter Enabled (1 = Enabled / 0 = Disabled),Jitter Max Size, Jitter Max Wait<newline>"
-    # Examples:
-    100000,MYSECUREPASSWORD,
+    
+    - Completed Example: [peer_list.dat](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/peer_list.dat)
+    - Base Example: [peer_list.dat](https://github.com/DVMProject/dvmhost/blob/master/configs/peer_list.example.dat)
+    - Comparison: [peer-list.dat](https://www.diffchecker.com/zvQ5HP50/)
+
+5. Define the talkgroups that you want to have have accessible to your peers within `talkgroup_rules.yml`. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.
+
+    ```bash
+    sudo nano /opt/dvm/rules/talkgroup_rules.yml
     ```
 
-5. Populate `talkgroup_rules.yml` with the talkgroups that you would like to have present on your system.
+    - Completed Example:
+    - Base Example: [talkgroup_rules.yml](https://github.com/DVMProject/dvmhost/blob/master/configs/talkgroup_rules.example.yml)
+    - Comparison: [talkgroup_rules.yml](https://www.diffchecker.com/3lxEHeJL/)
 
-    Example `talkgroup_rules.yml` (minimal config):
-
-    ```yaml
-    groupVoice:
-    - alias: Test Talkgroup 1
-      config:
-        active: true
-        affiliated: false
-        parrot: false
-      name: Test Talkgroup 1
-      source:
-        slot: 1
-        tgid: 20000 # Change this to your preferred talkgroup ID
-    - alias: Test Parrot 1
-      config:
-        active: true
-        affiliated: false
-        parrot: true # This enables this talkgroup to echo or "parrot" back the input transmission
-      name: Test Parrot 1
-      source:
-        slot: 1
-        tgid: 20001 # Change this to your preferred talkgroup ID
-    ```
-
-6. **Optional:** Populate `rid_acl.dat` if you wish to restrict access to your FNE by radio ID. This can always be configured later.
+    **Optional:** Populate `rid_acl.dat` if you wish to restrict access to your FNE by radio ID. This can always be configured later. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.
 
     ```bash
     sudo nano /opt/dvm/rules/rid_acl.dat
     ```
 
-    Example `rid_acl.dat`:
+    - Completed Example: [rid_acl.dat](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/rid_acl.dat)
+    - Base Example: [rid_acl.dat](https://github.com/DVMProject/dvmhost/blob/master/configs/rid_acl.example.dat)
+    - Comparison: [rid_acl.dat](https://www.diffchecker.com/K9TjGTJs/)
 
-    ```
-    #
-    # Digital Voice Modem - Radio ID Access Control List
-    #
-    # This file sets the valid Radio IDs allowed on a repeater. This file should always end with an empty line!
-    #
-    #   * RID               [REQUIRED] - Unique Radio ID.
-    #   * ENABLED           [REQUIRED] - Flag indicating whether or not this radio ID entry is enabled and valid.
-    #   * ALIAS             [OPTIONAL] - Textual string representing an alias for this radio ID entry.
-    #   * IP ADDRESS        [OPTIONAL] - IP Address assigned to this radio ID.
-    #
-    # Entry Format: "RID,Enabled (1 = Enabled / 0 = Disabled),Optional Alias,Optional IP Address,<newline>"
-    # Example:
-    175999,1,User-A,
-    ```
 
-7. Start the `dvmfne` daemon.
+6. Start the `dvmfne` daemon.
 
     ```bash
     sudo /opt/dvm/start-dvm-fne.sh fne-config.yml
