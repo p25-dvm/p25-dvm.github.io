@@ -49,6 +49,8 @@ body,
 .wy-side-nav-search input[type="text"] {
   background: var(--rtd-bg) !important;
   border: 1px solid var(--rtd-border) !important;
+  border-bottom-width: 1px !important;   /* RTD defaults this thicker */
+  box-shadow: none !important;            /* RTD adds an inset shadow */
   color: var(--rtd-text) !important;
   border-radius: 4px;
 }
@@ -332,10 +334,18 @@ footer span {
   background: var(--rtd-bg-alt) !important;
   color: var(--rtd-text) !important;
   border: 1px solid var(--rtd-border) !important;
+  box-shadow: none !important;   /* RTD's .btn uses an inset shadow as a faux bottom border */
 }
 
 .rst-footer-buttons a.btn:hover {
   background: var(--rtd-sidebar-2) !important;
+  box-shadow: none !important;
+}
+
+/* RTD also applies the faux-3D shadow on :active — keep it flat */
+.rst-footer-buttons a.btn:active {
+  box-shadow: none !important;
+  transform: none !important;
 }
 
 /* Prev/next footer border */
