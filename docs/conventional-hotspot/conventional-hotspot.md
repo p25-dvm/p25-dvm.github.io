@@ -273,7 +273,7 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     sudo nano /opt/dvm/rules/talkgroup_rules.yml
     ```
 
-    - Completed Example:
+    - Completed Example: [talkgroup_rules.yml](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/talkgroup_rules.yml)
     - Base Example: [talkgroup_rules.yml](https://github.com/DVMProject/dvmhost/blob/master/configs/talkgroup_rules.example.yml)
     - Comparison: [talkgroup_rules.yml](https://www.diffchecker.com/3lxEHeJL/)
 
