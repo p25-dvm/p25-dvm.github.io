@@ -22,6 +22,9 @@ theme:
     - content.code.copy
     - content.code.annotate
 
+extra_css:
+  - stylesheets/rtd-dark.css
+
 nav:
   - Home: index.md
   - Getting Started:
