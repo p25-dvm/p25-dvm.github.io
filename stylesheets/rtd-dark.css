@@ -1,0 +1,299 @@
+/* ============================================================
+   READ THE DOCS — DARK MODE RESTYLE
+   Permanent dark palette override for the built-in MkDocs
+   "readthedocs" theme. No toggle — always dark.
+   ============================================================ */
+
+:root {
+  --rtd-bg:          #1a1d21;   /* main content background */
+  --rtd-bg-alt:      #202327;   /* code blocks, table stripes */
+  --rtd-sidebar:     #15171a;   /* left nav background */
+  --rtd-sidebar-2:   #20242a;   /* nav hover */
+  --rtd-header:      #2b2f36;   /* sidebar search/header area */
+  --rtd-border:      #333840;
+  --rtd-text:        #c3c8d0;
+  --rtd-text-dim:    #8a919c;
+  --rtd-text-faint:  #5c636e;
+  --rtd-heading:     #e4e8ee;
+  --rtd-link:        #5a9fd4;    /* RTD's signature blue, lightened */
+  --rtd-link-hover:  #7bb8e8;
+  --rtd-code-text:   #d68c67;    /* inline code */
+  --rtd-admon-bg:    #20242a;
+}
+
+/* ── Page + body ── */
+body,
+.wy-body-for-nav {
+  background: var(--rtd-bg) !important;
+  color: var(--rtd-text) !important;
+}
+
+.wy-nav-content-wrap {
+  background: var(--rtd-bg) !important;
+}
+
+.wy-nav-content {
+  background: var(--rtd-bg) !important;
+  color: var(--rtd-text) !important;
+}
+
+/* ── Left sidebar ── */
+.wy-nav-side {
+  background: var(--rtd-sidebar) !important;
+}
+
+.wy-side-nav-search {
+  background: var(--rtd-header) !important;
+}
+
+.wy-side-nav-search input[type="text"] {
+  background: var(--rtd-bg) !important;
+  border: 1px solid var(--rtd-border) !important;
+  color: var(--rtd-text) !important;
+  border-radius: 4px;
+}
+
+.wy-side-nav-search > a,
+.wy-side-nav-search .wy-dropdown > a {
+  color: var(--rtd-heading) !important;
+}
+
+.wy-side-nav-search > div.version {
+  color: var(--rtd-text-dim) !important;
+}
+
+/* Sidebar menu headings */
+.wy-menu-vertical p.caption {
+  color: var(--rtd-text-faint) !important;
+}
+
+/* Sidebar links */
+.wy-menu-vertical a {
+  color: var(--rtd-text-dim) !important;
+}
+
+.wy-menu-vertical a:hover {
+  background: var(--rtd-sidebar-2) !important;
+  color: var(--rtd-text) !important;
+}
+
+/* Current/active top-level item */
+.wy-menu-vertical li.current {
+  background: var(--rtd-bg) !important;
+}
+
+.wy-menu-vertical li.current > a,
+.wy-menu-vertical li.on a {
+  background: var(--rtd-bg) !important;
+  color: var(--rtd-heading) !important;
+  border-color: var(--rtd-border) !important;
+}
+
+.wy-menu-vertical li.current a:hover {
+  background: var(--rtd-sidebar-2) !important;
+}
+
+/* Nested current items */
+.wy-menu-vertical li.toctree-l2.current > a,
+.wy-menu-vertical li.toctree-l2.current li.toctree-l3 > a,
+.wy-menu-vertical li.toctree-l3.current > a {
+  background: var(--rtd-bg-alt) !important;
+  color: var(--rtd-text) !important;
+  border-color: var(--rtd-border) !important;
+}
+
+.wy-menu-vertical li.toctree-l2 a,
+.wy-menu-vertical li.toctree-l3 a,
+.wy-menu-vertical li.toctree-l4 a {
+  color: var(--rtd-text-dim) !important;
+}
+
+/* ── Mobile nav top bar ── */
+.wy-nav-top {
+  background: var(--rtd-header) !important;
+}
+
+.wy-nav-top a {
+  color: var(--rtd-heading) !important;
+}
+
+/* ── Typography ── */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--rtd-heading) !important;
+}
+
+.rst-content p,
+.rst-content li,
+.wy-nav-content p,
+.wy-nav-content li {
+  color: var(--rtd-text) !important;
+}
+
+a, .rst-content a {
+  color: var(--rtd-link) !important;
+}
+
+a:hover, .rst-content a:hover {
+  color: var(--rtd-link-hover) !important;
+}
+
+strong {
+  color: var(--rtd-heading) !important;
+}
+
+hr {
+  border-color: var(--rtd-border) !important;
+}
+
+/* ── Inline code ── */
+.rst-content code,
+.rst-content tt,
+code {
+  background: var(--rtd-bg-alt) !important;
+  border: 1px solid var(--rtd-border) !important;
+  color: var(--rtd-code-text) !important;
+  border-radius: 3px;
+}
+
+/* ── Code blocks ── */
+.rst-content pre,
+.highlight,
+.highlight pre {
+  background: var(--rtd-bg-alt) !important;
+  border: 1px solid var(--rtd-border) !important;
+  border-radius: 4px;
+}
+
+.highlight pre,
+.rst-content .highlight pre {
+  color: var(--rtd-text) !important;
+}
+
+/* Syntax highlighting tokens */
+.highlight .c, .highlight .c1, .highlight .cm { color: #6a7280 !important; } /* comments */
+.highlight .k, .highlight .kn, .highlight .kd { color: #c191dd !important; } /* keywords */
+.highlight .s, .highlight .s1, .highlight .s2 { color: #b5cea8 !important; } /* strings */
+.highlight .nf, .highlight .nb               { color: #7bb8e8 !important; } /* functions */
+.highlight .mi, .highlight .mf               { color: #e8a87c !important; } /* numbers */
+.highlight .nv, .highlight .vi               { color: #d68c67 !important; } /* variables */
+.highlight .o,  .highlight .ow               { color: #c3c8d0 !important; } /* operators */
+
+/* ── Tables ── */
+.rst-content table.docutils,
+.wy-table-bordered-all,
+.rst-content table.docutils td,
+.rst-content table.docutils th {
+  border-color: var(--rtd-border) !important;
+}
+
+.rst-content table.docutils thead th,
+.wy-table thead th {
+  background: var(--rtd-bg-alt) !important;
+  color: var(--rtd-heading) !important;
+  border-color: var(--rtd-border) !important;
+}
+
+.rst-content table.docutils td {
+  background: var(--rtd-bg) !important;
+  color: var(--rtd-text) !important;
+}
+
+/* Zebra striping */
+.rst-content table.docutils:not(.field-list) tr:nth-child(2n-1) td,
+.wy-table-odd td,
+.wy-table-striped tr:nth-child(2n-1) td {
+  background: var(--rtd-bg-alt) !important;
+}
+
+/* ── Admonitions (note / warning / tip) ── */
+.rst-content .admonition,
+.rst-content .note,
+.rst-content .warning,
+.rst-content .tip,
+.rst-content .important {
+  background: var(--rtd-admon-bg) !important;
+  color: var(--rtd-text) !important;
+}
+
+.rst-content .admonition-title {
+  color: #ffffff !important;
+}
+
+/* note (blue) */
+.rst-content .note .admonition-title,
+.rst-content .seealso .admonition-title {
+  background: #2c5d8a !important;
+}
+
+/* warning (red/orange) */
+.rst-content .warning .admonition-title,
+.rst-content .caution .admonition-title {
+  background: #8a4b2c !important;
+}
+
+/* tip / hint (green) */
+.rst-content .tip .admonition-title,
+.rst-content .hint .admonition-title {
+  background: #2c7a4b !important;
+}
+
+.rst-content .admonition p {
+  color: var(--rtd-text) !important;
+}
+
+/* ── Search results ── */
+.wy-nav-content .search li {
+  border-color: var(--rtd-border) !important;
+}
+
+#search-results .search li {
+  background: var(--rtd-bg-alt) !important;
+}
+
+/* ── Footer ── */
+footer,
+.rst-footer-buttons + hr,
+footer p,
+footer span {
+  color: var(--rtd-text-dim) !important;
+}
+
+.rst-footer-buttons a.btn {
+  background: var(--rtd-bg-alt) !important;
+  color: var(--rtd-text) !important;
+  border: 1px solid var(--rtd-border) !important;
+}
+
+.rst-footer-buttons a.btn:hover {
+  background: var(--rtd-sidebar-2) !important;
+}
+
+/* Prev/next footer border */
+hr {
+  border-top-color: var(--rtd-border) !important;
+}
+
+/* ── Scrollbars ── */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--rtd-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rtd-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--rtd-text-faint);
+}
+
+/* ── Blockquotes ── */
+.rst-content blockquote {
+  color: var(--rtd-text-dim) !important;
+  border-left-color: var(--rtd-border) !important;
+}
