@@ -23,10 +23,10 @@ theme:
     - content.code.annotate
 
 extra_css:
-  - stylesheets/hacker.css
+  - stylesheets/dark-dimmed.css
 
-extra_javascript:
-  - javascripts/hacker.js
+#extra_javascript:
+#  - javascripts/hacker.js
 
 nav:
   - Home: index.md
