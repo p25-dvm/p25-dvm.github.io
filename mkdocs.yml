@@ -25,6 +25,9 @@ theme:
 extra_css:
   - stylesheets/rtd-dark.css
 
+extra_javascript:
+  - javascripts/external-links.js
+
 nav:
   - Home: index.md
   - Getting Started:
