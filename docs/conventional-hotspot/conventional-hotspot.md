@@ -245,8 +245,8 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     sudo nano /opt/dvm/fne-config.yml
     ```
     
-    - Completed Example: [fne-config.yml](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/fne-config.yml)
     - Base Example: [fne-config.yml](https://github.com/DVMProject/dvmhost/blob/master/configs/fne-config.example.yml)
+    - Completed Example: [fne-config.yml](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/fne-config.yml)
     - Comparison: [fne-config.yml](https://www.diffchecker.com/NXQRz3Rs/)
 
 3. Make a copy of the base rules, acls, and peer list for editing.
@@ -262,9 +262,9 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     ```bash
     sudo nano /opt/dvm/rules/peer_list.dat
     ```
-    
-    - Completed Example: [peer_list.dat](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/peer_list.dat)
+
     - Base Example: [peer_list.dat](https://github.com/DVMProject/dvmhost/blob/master/configs/peer_list.example.dat)
+    - Completed Example: [peer_list.dat](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/peer_list.dat)
     - Comparison: [peer-list.dat](https://www.diffchecker.com/zvQ5HP50/)
 
 5. Define the talkgroups that you want to have have accessible to your peers within `talkgroup_rules.yml`. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.
@@ -272,9 +272,9 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     ```bash
     sudo nano /opt/dvm/rules/talkgroup_rules.yml
     ```
-
-    - Completed Example: [talkgroup_rules.yml](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/talkgroup_rules.yml)
+    
     - Base Example: [talkgroup_rules.yml](https://github.com/DVMProject/dvmhost/blob/master/configs/talkgroup_rules.example.yml)
+    - Completed Example: [talkgroup_rules.yml](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/talkgroup_rules.yml)
     - Comparison: [talkgroup_rules.yml](https://www.diffchecker.com/3lxEHeJL/)
 
     **Optional:** Populate `rid_acl.dat` if you wish to restrict access to your FNE by radio ID. This can always be configured later. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.
@@ -283,8 +283,8 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     sudo nano /opt/dvm/rules/rid_acl.dat
     ```
 
-    - Completed Example: [rid_acl.dat](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/rid_acl.dat)
     - Base Example: [rid_acl.dat](https://github.com/DVMProject/dvmhost/blob/master/configs/rid_acl.example.dat)
+    - Completed Example: [rid_acl.dat](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/rid_acl.dat)
     - Comparison: [rid_acl.dat](https://www.diffchecker.com/K9TjGTJs/)
 
 
@@ -344,39 +344,33 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
 
 ### Configure `dvmhost`
 
-1. Copy the example `ident_table.dat` file and configure it for your frequency range. This guide is going to focus on the UHF R2 range as this will cover FCC Part 90 itinerant frequencies where encryption is legal.
+1. Copy the example `ident_table.dat` file and configure it for your frequency range. This guide is going to focus on the UHF R2 range as this will cover FCC Part 90 itinerant frequencies where encryption is legal.  If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.
 
     ```bash
     sudo cp /opt/dvm/examples/iden_table.example.dat /opt/dvm/rules/iden_table.dat
     sudo nano /opt/dvm/rules/iden_table.dat
     ```
 
-    Example `iden_table.dat` (unused base frequencies commented out):
-
-    ```
-    #
-    # This file sets the valid bandplan identity table.
-    # (It is recommended to use the included iden_channel_calc.py Python script
-    # to generate entries for this file.)
-    #
-    # ChId,Base Freq,Spacing (khz),Input Offset (mhz),Bandwidth (khz),<newline>
-    #0,851006250,6.25,-45.000,12.5,
-    #1,762006250,6.25,30.000,12.5,
-    #15,935001250,6.25,-39.00000,12.5,
-    2,450000000,6.25,5.000,12.5,
-    #3,146000000,6.25,1.000,12.5,
-    ```
+    - Base Example: [iden_table.dat](https://github.com/DVMProject/dvmhost/blob/master/configs/iden_table.example.dat)
+    - Completed Example: [iden_table.dat](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/iden_table.dat)
+    - Comparison: [iden_table.dat](https://www.diffchecker.com/9Tz7RNEd/)
 
 2. Calculate the frequency pair that will be used for your primary voice channel.
 
-    - Navigate to: https://dvmproject.io/iden-calc-web/
+    - Navigate to: [iden-calc-web](https://dvmproject.io/iden-calc-web/). This is a web-based version of the referenced `iden-channel-calc.py` script from `iden_table.dat`.
     - Enter the appropriate values into each of the following fields:
         - **Downlink Frequency (MHz):** The frequency on which the hotspot will receive transmissions.
+            - This guide uses: **464.000 MHz**
         - **Base Frequency (MHz):** A starting or reference frequency for a specific block or range of channels within the P25 system's frequency plan. Used in a formula, along with the **Channel ID** and **Spacing**, to calculate the specific frequency for a given channel.
+            - This guide uses: **450.000 MHz**
         - **Spacing (kHz):** The separation between the center frequencies of adjacent channels, often called the channel step or channel raster. Typically measured in kilohertz (kHz) (e.g., 12.5 kHz, **6.25 kHz for P25**). This value is crucial for calculating the exact frequency of a channel based on its ID and the base frequency.
+            - This guide uses: **6.25 kHz**
         - **Offset (MHz):** The standard frequency difference between the uplink and downlink frequencies for a repeater channel pair in a specific band (e.g., +5 MHz or -5 MHz). Ensures that radios transmit on one frequency and receive on another, allowing for simultaneous transmission and reception through a repeater.
+            - This guide uses: **5.000 MHz**
         - **Channel (dec):** A numerical identifier for a specific radio channel within the P25 system. This **decimal value** is used in a formula with the **Base Frequency** and **Spacing** to determine the precise operational frequency (often the **downlink**) for that channel.
+            - This guide uses: **2240 (dec)** / **0x8c0 (hex)** 
         - **Uplink Frequency (MHz):** Calculated automatically.
+            - This guide uses: **469.000 MHz**
 
 3. Make a copy of the example `config.yml` file for editing.
 
