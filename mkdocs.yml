@@ -23,7 +23,7 @@ theme:
     - content.code.annotate
 
 extra_css:
-  - stylesheets/dark-dimmed.css
+  - stylesheets/nord.css
 
 #extra_javascript:
 #  - javascripts/hacker.js
