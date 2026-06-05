@@ -1,0 +1,364 @@
+/* ============================================================
+   NORD THEME — MkDocs Material Override
+   Based on the Nord color palette (nordtheme.com)
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* ── Core palette ── */
+:root,
+[data-md-color-scheme="slate"] {
+  --nd-polar1:   #2e3440;
+  --nd-polar2:   #3b4252;
+  --nd-polar3:   #434c5e;
+  --nd-polar4:   #4c566a;
+  --nd-snow1:    #d8dee9;
+  --nd-snow2:    #e5e9f0;
+  --nd-snow3:    #eceff4;
+  --nd-frost1:   #8fbcbb;
+  --nd-frost2:   #88c0d0;
+  --nd-frost3:   #81a1c1;
+  --nd-frost4:   #5e81ac;
+  --nd-red:      #bf616a;
+  --nd-orange:   #d08770;
+  --nd-yellow:   #ebcb8b;
+  --nd-green:    #a3be8c;
+  --nd-purple:   #b48ead;
+
+  --nd-bg:       var(--nd-polar1);
+  --nd-bg-alt:   #272c36;
+  --nd-bg-hover: var(--nd-polar2);
+  --nd-border:   var(--nd-polar3);
+  --nd-text:     var(--nd-snow1);
+  --nd-text-dim: #7b88a1;
+  --nd-text-faint: var(--nd-polar4);
+  --nd-accent:   var(--nd-frost2);
+
+  --md-primary-fg-color:          var(--nd-frost3);
+  --md-primary-bg-color:          var(--nd-bg-alt);
+  --md-accent-fg-color:           var(--nd-frost2);
+  --md-default-bg-color:          var(--nd-bg);
+  --md-default-fg-color:          var(--nd-text);
+  --md-default-fg-color--light:   var(--nd-text-dim);
+  --md-default-fg-color--lighter: var(--nd-text-faint);
+  --md-footer-bg-color:           var(--nd-bg-alt);
+  --md-footer-bg-color--dark:     #1e2228;
+  --md-typeset-color:             var(--nd-text);
+}
+
+/* ── Fonts ── */
+body,
+.md-typeset {
+  font-family: 'Inter', system-ui, sans-serif !important;
+}
+
+.md-header__title,
+.md-nav__title,
+h1, h2, h3, h4 {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  letter-spacing: 0;
+}
+
+code, pre, .md-typeset code {
+  font-family: 'JetBrains Mono', monospace !important;
+}
+
+/* ── Header ── */
+.md-header {
+  background: var(--nd-bg-alt) !important;
+  border-bottom: 1px solid var(--nd-border);
+  box-shadow: none !important;
+}
+
+.md-header__title {
+  font-size: 1rem !important;
+  color: var(--nd-snow2) !important;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.md-header__button,
+.md-header__button.md-icon {
+  color: var(--nd-text-dim) !important;
+}
+
+.md-header__button:hover {
+  color: var(--nd-text) !important;
+}
+
+/* ── Search ── */
+.md-search__form {
+  background: var(--nd-bg) !important;
+  border: 1px solid var(--nd-border) !important;
+  border-radius: 6px !important;
+}
+
+.md-search__input {
+  font-family: 'Inter', sans-serif !important;
+  color: var(--nd-text) !important;
+}
+
+.md-search__input::placeholder {
+  color: var(--nd-text-faint) !important;
+}
+
+/* ── Navigation tabs ── */
+.md-tabs {
+  background: var(--nd-bg-alt) !important;
+  border-bottom: 1px solid var(--nd-border);
+}
+
+.md-tabs__link {
+  font-family: 'Inter', sans-serif !important;
+  color: var(--nd-text-dim) !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0;
+  opacity: 1 !important;
+}
+
+.md-tabs__link--active,
+.md-tabs__link:hover {
+  color: var(--nd-snow2) !important;
+}
+
+.md-tabs__link--active::after {
+  background: var(--nd-frost2) !important;
+}
+
+/* ── Sidebar ── */
+.md-sidebar {
+  background: var(--nd-bg-alt) !important;
+}
+
+.md-nav__title {
+  font-size: 0.7rem !important;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--nd-text-faint) !important;
+  background: transparent !important;
+  padding-top: 1rem;
+  text-transform: uppercase;
+}
+
+.md-nav__link {
+  font-family: 'Inter', sans-serif !important;
+  color: var(--nd-text-dim) !important;
+  font-size: 0.8rem !important;
+  transition: color 0.15s, background 0.15s;
+}
+
+.md-nav__link:hover,
+.md-nav__link--active {
+  color: var(--nd-snow2) !important;
+  background: var(--nd-bg-hover) !important;
+}
+
+.md-nav__link--active {
+  border-left: 2px solid var(--nd-frost2);
+}
+
+/* ── Main content ── */
+.md-main {
+  background: var(--nd-bg) !important;
+}
+
+.md-content {
+  background: var(--nd-bg) !important;
+}
+
+/* ── Typography ── */
+.md-typeset h1 {
+  font-size: 1.8rem !important;
+  font-weight: 600;
+  color: var(--nd-snow2) !important;
+  border-bottom: 1px solid var(--nd-border);
+  padding-bottom: 0.4rem;
+}
+
+.md-typeset h1::after {
+  display: none;
+}
+
+.md-typeset h2 {
+  font-size: 1.3rem !important;
+  font-weight: 600;
+  color: var(--nd-snow2) !important;
+}
+
+.md-typeset h2::before { display: none; }
+
+.md-typeset h3 {
+  font-size: 1.1rem !important;
+  font-weight: 600;
+  color: var(--nd-frost1) !important;
+}
+
+.md-typeset h3::before { display: none; }
+
+.md-typeset p,
+.md-typeset li {
+  color: var(--nd-text);
+  line-height: 1.75;
+}
+
+.md-typeset a {
+  color: var(--nd-frost2) !important;
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.md-typeset a:hover {
+  color: var(--nd-frost1) !important;
+  text-decoration: underline;
+  border-bottom: none;
+}
+
+.md-typeset strong {
+  color: var(--nd-snow2);
+  font-weight: 600;
+}
+
+.md-typeset hr {
+  border-color: var(--nd-border);
+  border-style: solid;
+}
+
+/* ── Code blocks ── */
+.md-typeset pre {
+  background: var(--nd-bg-alt) !important;
+  border: 1px solid var(--nd-border) !important;
+  border-radius: 6px !important;
+}
+
+.md-typeset code {
+  background: var(--nd-bg-alt) !important;
+  color: var(--nd-frost1) !important;
+  border: 1px solid var(--nd-border) !important;
+  border-radius: 4px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 0.85em;
+}
+
+/* Syntax highlight overrides */
+.highlight .c,  .highlight .c1 { color: var(--nd-polar4) !important; }
+.highlight .k,  .highlight .kn { color: var(--nd-purple) !important; }
+.highlight .s,  .highlight .s1, .highlight .s2 { color: var(--nd-green) !important; }
+.highlight .nf, .highlight .n  { color: var(--nd-frost2) !important; }
+.highlight .nb                  { color: var(--nd-frost3) !important; }
+.highlight .mi, .highlight .mf { color: var(--nd-orange) !important; }
+
+/* Copy button */
+.md-clipboard {
+  color: var(--nd-text-faint) !important;
+}
+
+.md-clipboard:hover {
+  color: var(--nd-text) !important;
+}
+
+/* ── Admonitions ── */
+.md-typeset .admonition,
+.md-typeset details {
+  background: var(--nd-bg-alt) !important;
+  border: 1px solid var(--nd-border) !important;
+  border-left: 3px solid var(--nd-frost3) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+.md-typeset .admonition-title,
+.md-typeset summary {
+  background: transparent !important;
+  color: var(--nd-snow2) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 0.8rem !important;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* ── Tables ── */
+.md-typeset table:not([class]) {
+  border: 1px solid var(--nd-border) !important;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+  background: var(--nd-bg-alt) !important;
+  color: var(--nd-snow2) !important;
+  border-bottom: 1px solid var(--nd-border) !important;
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0;
+}
+
+.md-typeset table:not([class]) td {
+  color: var(--nd-text);
+  border-bottom: 1px solid var(--nd-border) !important;
+}
+
+.md-typeset table:not([class]) tr:hover td {
+  background: var(--nd-bg-hover) !important;
+}
+
+/* ── Footer ── */
+.md-footer {
+  background: var(--nd-bg-alt) !important;
+  border-top: 1px solid var(--nd-border);
+}
+
+.md-footer-meta {
+  background: #1e2228 !important;
+}
+
+.md-footer__link {
+  color: var(--nd-text-dim) !important;
+}
+
+.md-footer__link:hover {
+  color: var(--nd-text) !important;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--nd-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--nd-border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nd-text-faint);
+}
+
+/* ── Back to top button ── */
+.md-top {
+  background: var(--nd-bg-alt) !important;
+  color: var(--nd-text) !important;
+  border: 1px solid var(--nd-border) !important;
+  border-radius: 6px !important;
+  font-family: 'Inter', sans-serif !important;
+  box-shadow: none !important;
+}
+
+/* ── Permalinks ── */
+.md-typeset .headerlink {
+  display: none;
+}
+
+.md-typeset h1:hover .headerlink,
+.md-typeset h2:hover .headerlink,
+.md-typeset h3:hover .headerlink,
+.md-typeset h4:hover .headerlink {
+  display: inline;
+  color: var(--nd-text-faint);
+}
