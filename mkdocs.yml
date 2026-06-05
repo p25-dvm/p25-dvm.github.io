@@ -5,7 +5,7 @@ repo_url: https://github.com/p25-dvm/
 repo_name: P25 DVM
 
 theme:
-  name: material
+  name: readthedocs
   font:
     text: Share Tech Mono
     code: Share Tech Mono
@@ -22,8 +22,8 @@ theme:
     - content.code.copy
     - content.code.annotate
 
-extra_css:
-  - stylesheets/dracula.css
+#extra_css:
+#  - stylesheets/dracula.css
 
 #extra_javascript:
 #  - javascripts/hacker.js
