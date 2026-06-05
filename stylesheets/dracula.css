@@ -364,3 +364,13 @@ code, pre, .md-typeset code {
 .md-sidebar--secondary {
   z-index: 9 !important;
 }
+
+/* ── Remove background highlight from active nav items ── */
+.md-nav__link--active,
+.md-nav__link--passed {
+  background: transparent !important;
+}
+
+.md-nav__item--active > .md-nav__link {
+  background: transparent !important;
+}
