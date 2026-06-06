@@ -1,6 +1,37 @@
 # Conventional Hotspot Setup
 
-This guide will walk you through setting up and configuring a conventional P25 hotspot for use as a standalone network on either ham bands or your own FCC Part 90 license (encryption legal). This guide will not cover connecting into existing hobbyist systems such as NexCom, CTRS, etc.
+This guide will walk you through setting up and configuring a conventional P25 hotspot for use with an FCC Part 90 license where encryption is legal. If you wish to utilize frequencies in the 70cm ham band you are welcome to do so but be mindful to not enable encryption when programming your radio as this is not legal in the US under current FCC guidelines. In order to create a meaninful network at least 2 hotspots are recommended, one at Site A and the other at Site B. This guide will not cover connecting into existing hobbyist systems such as NexCom, CTRS, etc.
+
+### Overview
+- The hotspot that this guide will cover configuring has the following parameters:
+    - **Compute:** Raspberry Pi
+    - **Modem Connection:** Hat (GPIO)
+    - **Name:** PEER-1 (replace with your desired name, such as "John Smith's Hotspot" or "Alpha-Spot-1")
+- By the end of the hotspot configuration you will be able transmit from your radio to the hotspot at Site A and receive the transmission on the radio connected to hotspot at Site B, Site C, Site D, etc.
+    - Note: This guide will create a configuration that supports up to 5 hotspots and radios. Hotspots: PEER-1 through 5 and Radios: RADIO-1 through 5. You are free, and encouraged to change the default names and identifiers to something meaningful and add or remove peers and radios as you see fit.
+
+### Topology 
+- The topology below outlines the network setup this guide will follow. In the example, you have your "FNE" (dvmfne) as your "network core" which all of the hotspots (dvmhost) will connect to. Each hotspot or "peer" will allow authorized radios (rid_acl.dat) to connect, transmit, and receive voice and data from its modem. A hotspot may have more than one radio authorized to it (Ex: PEER-3) or no radio authorized (Ex: PEER-4).
+
+```
+                            +-----------+
+                            |    FNE    |
+                            +-----+-----+
+                                  |
+        +-------------+-----------+-----------+-------------+
+        |             |           |           |             |
+   +----+----+   +----+----+  +---+-----+ +---+-----+  +----+----+
+   | PEER-1  |   | PEER-2  |  | PEER-3  | | PEER-4  |  | PEER-5  |
+   +----+----+   +----+----+  +----+----+ +---------+  +----+----+
+        |             |            |                        |
+   +----+----+   +----+----+       |                   +----+----+
+   | RADIO-1 |   | RADIO-2 |       |                   | RADIO-5 |
+   +---------+   +---------+       +--------+          +---------+
+                                   |        |
+                               +---+---+  +-+-----+
+                               |RADIO-3|  |RADIO-4|
+                               +-------+  +-------+
+```
 
 **This guide assumes the following:**
 
