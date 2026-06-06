@@ -32,10 +32,10 @@ Placeholder
 ## Program RX Radio
 Placeholder
 
-### Troubleshooting
+## Troubleshooting
 Placeholder
 
-## DVM-V1 Duplex Modem
+### DVM-V1 Duplex Modem
 Placeholder
 
-## TX & RX Radios
+### TX & RX Radios
