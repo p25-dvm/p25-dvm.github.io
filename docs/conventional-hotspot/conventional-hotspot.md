@@ -339,6 +339,7 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     sudo mkdir /opt/dvm/examples/
     sudo mv /opt/dvm/*.example.* /opt/dvm/examples/
     sudo mkdir /opt/dvm/log/host/
+    sudo mkdir /opt/dvm/log/host-activity/
     sudo mkdir /opt/dvm/rules/
     ```
 
@@ -379,29 +380,12 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     sudo nano /opt/dvm/config.yml
     ```
 
-4. Define the base settings for P25 functionality within `config.yml`. Locate and configure these core settings within `config.yml`. All other settings can be set to your preference.
+4. Define the base settings for P25 functionality within `config.yml`. Locate and configure these core settings within `config.yml`. All other settings can be set to your preference. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.
 
+    - Base Example: [config.yml](https://github.com/DVMProject/dvmhost/blob/master/configs/config.example.yml)
+    - Completed Example: [config.yml](https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/config.yml)
+    - Comparison: [config.yml](https://www.diffchecker.com/9pCPSVBG/)
     ```yaml
-    log.displayLevel: 1
-    log.filepath: /opt/dvm/log/host/
-    log.fileRoot: host
-    network.address: [ADDRESS-OF-FNE]
-    network.id: [6-DIGIT-ID-OF-HOTSPOT]
-    network.password: [PASSWORD-FROM-FNE-CONFIG.YML-ON-FNE]
-    system.identity: MYHOTSPOT
-    protocols.dmr.enable: false
-    protocols.nxdn.enable: false
-    protocols.p25.enable: true
-    system.modem.protocol.type: uart
-    system.modem.protocol.mode: air
-    system.modem.protocol.uart.port: /dev/ttyAMA0 # /dev/ttyUSB0 if you are using the MMDVM_HS_USB hat
-    system.modem.protocol.uart.speed: 115200
-    system.config.channelId: [CHANNEL-ENTRY-FROM-IDEN_TABLE.DAT] # 2 if you are using the UHF R2 band mentioned earlier
-    system.config.channelNo: [VALUE-CALCULATED-FROM-IDEN-CALC-WEB]
-    system.config.voiceChNo.channelId: 2
-    system.config.voiceChNo.channelNo: [HEX-VALUE-CALCULATED-FROM-IDEN-CALC-WEB]
-    system.config.iden_table.file: /opt/dvm/rules/iden_table.dat
-    ```
 
 5. Connect to the modem to verify your settings.
 
@@ -409,11 +393,13 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     sudo /opt/dvm/dvmhost -c /opt/dvm/config.yml --setup
     ```
 
-    - Press **F8** — the modem should initialize and connect successfully. If it does not, check your connections. This is also where alignment would take place if necessary. Alignment is generally needed if the hotspot does not activate when receiving a transmission from a subscriber radio. For assistance tuning your modem please refer to the calibration section.
+    - Press **F8** — the modem should initialize and connect successfully. If it does not, check your connections. This is also where alignment would take place if necessary. Alignment is generally needed if the hotspot does not activate when receiving a transmission from a subscriber radio. For assistance tuning your modem please refer to the calibration tutorial under the reference section or the [offical calibration steps](https://github.com/DVMProject/dvmhost#dvmhost-configuration) from the [DVMProject GitHub](https://github.com/DVMProject/).
     - Press **F2** — this will save your current settings and "flatten" your `config.yml` file, removing any comments.
     - Press **F3** — this will return you to the console.
 
-    - **Note:** Due to the length of a finalized `config.yml`, it will not be included inline. Click here to view it on GitHub.
+    **Note:** Due to the length of a finalized `config.yml`, it will not be included inline. Click here to view it on GitHub.
+
+    - Completed Flattened Example: [config-flattened.yml]()
 
 6. Start the `dvmhost` process as a daemon and verify your process is running.
 
@@ -422,7 +408,13 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     ps aux | grep dvmhost
     ```
 
-    - **Note:** If you do not see a `dvmhost` process running, review `/opt/dvm/log/host-CURRENT-DATE.log` for details.
+    `dvmhost` running under `root` output example:
+
+    ```bash
+    root      8943  1.1  0.1 117616  9472 ?        Ssl  Jun01  38:51 dvmhost -c /opt/dvm/config.yml
+    ```
+
+    - **Note:** If you do not see a `dvmhost` process running, review `/opt/dvm/log/host/host-CURRENT-DATE.log` for details.
 
 7. Create a `dvmhost` system service.
 
@@ -432,7 +424,7 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
 
     Example `dvmhost.service`:
 
-    ```
+    ```bash
     [Unit]
     Description=dvmhost
     After=network.target
@@ -448,7 +440,7 @@ The next sections will cover the configuration of `dvmfne` and `dvmhost`. These 
     WantedBy=multi-user.target
     ```
 
-8. Enable the `dvmhost` service to start at system boot.
+9. Enable the `dvmhost` service to start at system boot.
 
     ```bash
     sudo systemctl daemon-reload
