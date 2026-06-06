@@ -459,7 +459,8 @@
 </span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/examples/
 </span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>sudo<span class="w"> </span>mv<span class="w"> </span>/opt/dvm/*.example.*<span class="w"> </span>/opt/dvm/examples/
 </span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/log/host/
-</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/rules/
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/log/host-activity/
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/rules/
 </span></code></pre></div>
 </li>
 </ol>
@@ -516,50 +517,38 @@
 </span></code></pre></div>
 </li>
 <li>
-<p>Define the base settings for P25 functionality within <code>config.yml</code>. Locate and configure these core settings within <code>config.yml</code>. All other settings can be set to your preference.</p>
-<div class="language-yaml highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="nt">log.displayLevel</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="nt">log.filepath</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/opt/dvm/log/host/</span>
-</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="nt">log.fileRoot</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">host</span>
-</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="nt">network.address</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">ADDRESS-OF-FNE</span><span class="p p-Indicator">]</span>
-</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="nt">network.id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">6-DIGIT-ID-OF-HOTSPOT</span><span class="p p-Indicator">]</span>
-</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="nt">network.password</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">PASSWORD-FROM-FNE-CONFIG.YML-ON-FNE</span><span class="p p-Indicator">]</span>
-</span><span id="__span-25-7"><a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="nt">system.identity</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">MYHOTSPOT</span>
-</span><span id="__span-25-8"><a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a><span class="nt">protocols.dmr.enable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-</span><span id="__span-25-9"><a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="nt">protocols.nxdn.enable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span>
-</span><span id="__span-25-10"><a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="nt">protocols.p25.enable</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
-</span><span id="__span-25-11"><a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="nt">system.modem.protocol.type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">uart</span>
-</span><span id="__span-25-12"><a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="nt">system.modem.protocol.mode</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">air</span>
-</span><span id="__span-25-13"><a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="nt">system.modem.protocol.uart.port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/dev/ttyAMA0</span><span class="w"> </span><span class="c1"># /dev/ttyUSB0 if you are using the MMDVM_HS_USB hat</span>
-</span><span id="__span-25-14"><a id="__codelineno-25-14" name="__codelineno-25-14" href="#__codelineno-25-14"></a><span class="nt">system.modem.protocol.uart.speed</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">115200</span>
-</span><span id="__span-25-15"><a id="__codelineno-25-15" name="__codelineno-25-15" href="#__codelineno-25-15"></a><span class="nt">system.config.channelId</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">CHANNEL-ENTRY-FROM-IDEN_TABLE.DAT</span><span class="p p-Indicator">]</span><span class="w"> </span><span class="c1"># 2 if you are using the UHF R2 band mentioned earlier</span>
-</span><span id="__span-25-16"><a id="__codelineno-25-16" name="__codelineno-25-16" href="#__codelineno-25-16"></a><span class="nt">system.config.channelNo</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">VALUE-CALCULATED-FROM-IDEN-CALC-WEB</span><span class="p p-Indicator">]</span>
-</span><span id="__span-25-17"><a id="__codelineno-25-17" name="__codelineno-25-17" href="#__codelineno-25-17"></a><span class="nt">system.config.voiceChNo.channelId</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
-</span><span id="__span-25-18"><a id="__codelineno-25-18" name="__codelineno-25-18" href="#__codelineno-25-18"></a><span class="nt">system.config.voiceChNo.channelNo</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">HEX-VALUE-CALCULATED-FROM-IDEN-CALC-WEB</span><span class="p p-Indicator">]</span>
-</span><span id="__span-25-19"><a id="__codelineno-25-19" name="__codelineno-25-19" href="#__codelineno-25-19"></a><span class="nt">system.config.iden_table.file</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/opt/dvm/rules/iden_table.dat</span>
-</span></code></pre></div>
+<p>Define the base settings for P25 functionality within <code>config.yml</code>. Locate and configure these core settings within <code>config.yml</code>. All other settings can be set to your preference. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.</p>
+<ul>
+<li>Base Example: <a href="https://github.com/DVMProject/dvmhost/blob/master/configs/config.example.yml">config.yml</a></li>
+<li>Completed Example: <a href="https://github.com/p25-dvm/p25-dvm.github.io/blob/main/docs/example-configs/conventional-hotspot/config.yml">config.yml</a></li>
+<li>Comparison: <a href="https://www.diffchecker.com/9pCPSVBG/">config.yml</a>
+```yaml</li>
+</ul>
 </li>
 <li>
 <p>Connect to the modem to verify your settings.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>sudo<span class="w"> </span>/opt/dvm/dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml<span class="w"> </span>--setup
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>sudo<span class="w"> </span>/opt/dvm/dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml<span class="w"> </span>--setup
 </span></code></pre></div>
 <ul>
-<li>Press <strong>F8</strong> — the modem should initialize and connect successfully. If it does not, check your connections. This is also where alignment would take place if necessary. Alignment is generally needed if the hotspot does not activate when receiving a transmission from a subscriber radio. For assistance tuning your modem please refer to the calibration section.</li>
+<li>Press <strong>F8</strong> — the modem should initialize and connect successfully. If it does not, check your connections. This is also where alignment would take place if necessary. Alignment is generally needed if the hotspot does not activate when receiving a transmission from a subscriber radio. For assistance tuning your modem please refer to the calibration tutorial under the reference section or the <a href="https://github.com/DVMProject/dvmhost#dvmhost-configuration">offical calibration steps</a> from the <a href="https://github.com/DVMProject/">DVMProject GitHub</a>.</li>
 <li>Press <strong>F2</strong> — this will save your current settings and "flatten" your <code>config.yml</code> file, removing any comments.</li>
-<li>
-<p>Press <strong>F3</strong> — this will return you to the console.</p>
-</li>
-<li>
+<li>Press <strong>F3</strong> — this will return you to the console.</li>
+</ul>
 <p><strong>Note:</strong> Due to the length of a finalized <code>config.yml</code>, it will not be included inline. Click here to view it on GitHub.</p>
-</li>
+<ul>
+<li>Completed Flattened Example: <a href="">config-flattened.yml</a></li>
 </ul>
 </li>
 <li>
 <p>Start the <code>dvmhost</code> process as a daemon and verify your process is running.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>sudo<span class="w"> </span>/opt/dvm/start-dvm.sh<span class="w"> </span>/opt/dvm/config.yml
-</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>dvmhost
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>sudo<span class="w"> </span>/opt/dvm/start-dvm.sh<span class="w"> </span>/opt/dvm/config.yml
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>dvmhost
+</span></code></pre></div>
+<p><code>dvmhost</code> running under <code>root</code> output example:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>root<span class="w">      </span><span class="m">8943</span><span class="w">  </span><span class="m">1</span>.1<span class="w">  </span><span class="m">0</span>.1<span class="w"> </span><span class="m">117616</span><span class="w">  </span><span class="m">9472</span><span class="w"> </span>?<span class="w">        </span>Ssl<span class="w">  </span>Jun01<span class="w">  </span><span class="m">38</span>:51<span class="w"> </span>dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml
 </span></code></pre></div>
 <ul>
-<li><strong>Note:</strong> If you do not see a <code>dvmhost</code> process running, review <code>/opt/dvm/log/host-CURRENT-DATE.log</code> for details.</li>
+<li><strong>Note:</strong> If you do not see a <code>dvmhost</code> process running, review <code>/opt/dvm/log/host/host-CURRENT-DATE.log</code> for details.</li>
 </ul>
 </li>
 <li>
@@ -567,19 +556,19 @@
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/systemd/system/dvmhost.service
 </span></code></pre></div>
 <p>Example <code>dvmhost.service</code>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>[Unit]
-</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a>Description=dvmhost
-</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>After=network.target
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="o">[</span>Unit<span class="o">]</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="nv">Description</span><span class="o">=</span>dvmhost
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="nv">After</span><span class="o">=</span>network.target
 </span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>
-</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a>[Service]
-</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a>ExecStart=/opt/dvm/bin/dvmhost -c /opt/dvm/config.yml -f
-</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a>User=root
-</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a>Type=forking
-</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a>Restart=on-abnormal
-</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a>TimeoutSec=infinity
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="o">[</span>Service<span class="o">]</span>
+</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="nv">ExecStart</span><span class="o">=</span>/opt/dvm/bin/dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml<span class="w"> </span>-f
+</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="nv">User</span><span class="o">=</span>root
+</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="nv">Type</span><span class="o">=</span>forking
+</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="nv">Restart</span><span class="o">=</span>on-abnormal
+</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="nv">TimeoutSec</span><span class="o">=</span>infinity
 </span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a>
-</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a>[Install]
-</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a>WantedBy=multi-user.target
+</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="o">[</span>Install<span class="o">]</span>
+</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
 </span></code></pre></div>
 </li>
 <li>
