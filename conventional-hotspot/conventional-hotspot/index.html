@@ -53,6 +53,10 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Conventional Hotspot</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#topology">Topology</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#hardware-requirements">Hardware Requirements</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#software-requirements">Software Requirements</a>
@@ -140,7 +144,42 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="conventional-hotspot-setup">Conventional Hotspot Setup</h1>
-<p>This guide will walk you through setting up and configuring a conventional P25 hotspot for use as a standalone network on either ham bands or your own FCC Part 90 license (encryption legal). This guide will not cover connecting into existing hobbyist systems such as NexCom, CTRS, etc.</p>
+<p>This guide will walk you through setting up and configuring a conventional P25 hotspot for use with an FCC Part 90 license where encryption is legal. If you wish to utilize frequencies in the 70cm ham band you are welcome to do so but be mindful to not enable encryption when programming your radio as this is not legal in the US under current FCC guidelines. In order to create a meaninful network at least 2 hotspots are recommended, one at Site A and the other at Site B. This guide will not cover connecting into existing hobbyist systems such as NexCom, CTRS, etc.</p>
+<h3 id="overview">Overview</h3>
+<ul>
+<li>The hotspot that this guide will cover configuring has the following parameters:<ul>
+<li><strong>Compute:</strong> Raspberry Pi</li>
+<li><strong>Modem Connection:</strong> Hat (GPIO)</li>
+<li><strong>Name:</strong> PEER-1 (replace with your desired name, such as "John Smith's Hotspot" or "Alpha-Spot-1")</li>
+</ul>
+</li>
+<li>By the end of the hotspot configuration you will be able transmit from your radio to the hotspot at Site A and receive the transmission on the radio connected to hotspot at Site B, Site C, Site D, etc.<ul>
+<li>Note: This guide will create a configuration that supports up to 5 hotspots and radios. Hotspots: PEER-1 through 5 and Radios: RADIO-1 through 5. You are free, and encouraged to change the default names and identifiers to something meaningful and add or remove peers and radios as you see fit.</li>
+</ul>
+</li>
+</ul>
+<h3 id="topology">Topology</h3>
+<ul>
+<li>The topology below outlines the network setup this guide will follow. In the example, you have your "FNE" (dvmfne) as your "network core" which all of the hotspots (dvmhost) will connect to. Each hotspot or "peer" will allow authorized radios (rid_acl.dat) to connect, transmit, and receive voice and data from its modem. A hotspot may have more than one radio authorized to it (Ex: PEER-3) or no radio authorized (Ex: PEER-4).</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>                            +-----------+
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>                            |    FNE    |
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>                            +-----+-----+
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>                                  |
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        +-------------+-----------+-----------+-------------+
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        |             |           |           |             |
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>   +----+----+   +----+----+  +---+-----+ +---+-----+  +----+----+
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>   | PEER-1  |   | PEER-2  |  | PEER-3  | | PEER-4  |  | PEER-5  |
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>   +----+----+   +----+----+  +----+----+ +---------+  +----+----+
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>        |             |            |                        |
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>   +----+----+   +----+----+       |                   +----+----+
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>   | RADIO-1 |   | RADIO-2 |       |                   | RADIO-5 |
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>   +---------+   +---------+       +--------+          +---------+
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>                                   |        |
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>                               +---+---+  +-+-----+
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>                               |RADIO-3|  |RADIO-4|
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                               +-------+  +-------+
+</span></code></pre></div>
 <p><strong>This guide assumes the following:</strong></p>
 <ul>
 <li>You are either a licensed ham radio operator or possess an FCC Part 90 business license.</li>
@@ -171,7 +210,7 @@
 <ol>
 <li>
 <p>Ensure your system is fully up to date.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>upgrade
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>upgrade
 </span></code></pre></div>
 </li>
 <li>
@@ -179,12 +218,12 @@
 <ul>
 <li><strong>Skip this step if you are using an MMDVM_HS_USB adapter or non-Pi based compute.</strong></li>
 </ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ssh<span class="w"> </span>user@raspberrypi
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>disable<span class="w"> </span>bluetooth.service<span class="w"> </span>serial-getty@ttyAMA0.service
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>mask<span class="w"> </span>serial-getty@ttyAMA0.service
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>grep<span class="w"> </span><span class="s1">&#39;^dtoverlay=disable-bt&#39;</span><span class="w"> </span>/boot/firmware/config.txt<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;dtoverlay=disable-bt&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/boot/firmware/config.txt
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/^console=serial0,115200 *//&#39;</span><span class="w"> </span>/boot/firmware/cmdline.txt
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>sudo<span class="w"> </span>reboot
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>ssh<span class="w"> </span>user@raspberrypi
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>disable<span class="w"> </span>bluetooth.service<span class="w"> </span>serial-getty@ttyAMA0.service
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>mask<span class="w"> </span>serial-getty@ttyAMA0.service
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>grep<span class="w"> </span><span class="s1">&#39;^dtoverlay=disable-bt&#39;</span><span class="w"> </span>/boot/firmware/config.txt<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;dtoverlay=disable-bt&#39;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>sudo<span class="w"> </span>tee<span class="w"> </span>-a<span class="w"> </span>/boot/firmware/config.txt
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>sudo<span class="w"> </span>sed<span class="w"> </span>-i<span class="w"> </span><span class="s1">&#39;s/^console=serial0,115200 *//&#39;</span><span class="w"> </span>/boot/firmware/cmdline.txt
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>sudo<span class="w"> </span>reboot
 </span></code></pre></div>
 <ul>
 <li><strong>Note:</strong> These steps were taken from the <a href="https://github.com/DVMProject/dvmhost">dvmhost GitHub repository</a> under the <strong>Raspberry Pi Preparation Notes</strong> section and updated to accommodate the Raspbian 12 file structure.<ul>
@@ -199,7 +238,7 @@
 <ol>
 <li>
 <p>Ensure your system is fully up to date.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>upgrade
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>sudo<span class="w"> </span>apt<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt<span class="w"> </span>upgrade
 </span></code></pre></div>
 </li>
 <li>
@@ -207,20 +246,20 @@
 <ul>
 <li><strong>Note:</strong> There may be some variance based on which chipset you have. In the example below there are 2 MMDVM_HS_HAT_DUPLEX modems attached, and they both show a different device ID.</li>
 </ul>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>lsusb
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>lsusb
 </span></code></pre></div>
 <p>Example output:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>Bus 003 Device 005: ID 9986:7523  USB Serial &lt;-- MMDVM_HS_HAT_DUPLEX
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics CH340 serial converter &lt;-- MMDVM_HS_HAT_DUPLEX
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>Bus 004 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>Bus 003 Device 005: ID 9986:7523  USB Serial &lt;-- MMDVM_HS_HAT_DUPLEX
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>Bus 003 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>Bus 002 Device 001: ID 1d6b:0003 Linux Foundation 3.0 root hub
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>Bus 001 Device 006: ID 1a86:7523 QinHeng Electronics CH340 serial converter &lt;-- MMDVM_HS_HAT_DUPLEX
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>Bus 001 Device 001: ID 1d6b:0002 Linux Foundation 2.0 root hub
 </span></code></pre></div>
 </li>
 <li>
 <p>Next you will need to locate the physical device identifier of the adapter. A single adapter will likely reside at <code>/dev/ttyUSB0</code>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ls<span class="w"> </span>/dev<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>USB
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>ls<span class="w"> </span>/dev<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>USB
 </span></code></pre></div>
 </li>
 </ol>
@@ -233,80 +272,80 @@
 </li>
 <li>
 <p>Clone the <code>hsflash</code> GitHub repository and compile the code.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ThisGuyNeedsABeer/hsflash.git
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">cd</span><span class="w"> </span>hsflash/
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>gcc<span class="w"> </span>hsflash.c<span class="w"> </span>-o<span class="w"> </span>hsflash
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>chmod<span class="w"> </span>+x<span class="w"> </span>hsflash
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ThisGuyNeedsABeer/hsflash.git
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">cd</span><span class="w"> </span>hsflash/
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>gcc<span class="w"> </span>hsflash.c<span class="w"> </span>-o<span class="w"> </span>hsflash
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>chmod<span class="w"> </span>+x<span class="w"> </span>hsflash
 </span></code></pre></div>
 </li>
 <li>
 <p>Download the <code>dvm-firmware-hs-hat-dual.bin</code> firmware to the <code>hsflash</code> directory.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>wget<span class="w"> </span>https://github.com/DVMProject/dvmfirmware-hs/releases/download/2025-11-06/dvm-firmware-hs-hat-dual.bin
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>wget<span class="w"> </span>https://github.com/DVMProject/dvmfirmware-hs/releases/download/2025-11-06/dvm-firmware-hs-hat-dual.bin
 </span></code></pre></div>
 </li>
 <li>
 <p>Flash the newly downloaded firmware. If <code>stm32flash</code> is missing, <code>hsflash</code> will attempt to install it.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>./hsflash
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>./hsflash
 </span></code></pre></div>
 <p>Example output:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>██╗  ██╗███████╗   ███████╗██╗      █████╗ ███████╗██╗  ██╗
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>██║  ██║██╔════╝   ██╔════╝██║     ██╔══██╗██╔════╝██║  ██║
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>███████║███████╗   █████╗  ██║     ███████║███████╗███████║
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>██╔══██║╚════██║   ██╔══╝  ██║     ██╔══██║╚════██║██╔══██║
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>██║  ██║███████║██╗██║     ███████╗██║  ██║███████║██║  ██║
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>╚═╝  ╚═╝╚══════╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>                  * HOTSPOT FLASH EZ *
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>[WARN] stm32flash is not installed.
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>Install stm32flash now? [Y/n]: y
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>
-</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>... apt output omitted...
-</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a>
-</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>Enter BOOT0 GPIO pin [default 20]: 20
-</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a>Enter NRST GPIO pin [default 21]: 21
-</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a>Enter firmware filename (e.g. dvm-firmware-hs-hat-dual.bin): dvm-firmware-hs-hat-dual.bin
-</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>Enter serial port [default /dev/ttyAMA0]: /dev/ttyAMA0
-</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>
-</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>===== Configuration Summary =====
-</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a>BOOT0 GPIO      : 20
-</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a>NRST GPIO       : 21
-</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a>BIN_FILE        : dvm-firmware-hs-hat-dual.bin
-</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a>SERIAL_PORT     : /dev/ttyAMA0
-</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a>stm32flash      : found
-</span><span id="__span-9-25"><a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a>=================================
-</span><span id="__span-9-26"><a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a>
-</span><span id="__span-9-27"><a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a>Proceed with flashing? [Y/n]: y
-</span><span id="__span-9-28"><a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a>[INFO] Proceeding with firmware flash setup...
-</span><span id="__span-9-29"><a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a>[INFO] Setting BOOT0 high (GPIO20)...
-</span><span id="__span-9-30"><a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a>[ raspi-gpio is deprecated - try `pinctrl` instead ]
-</span><span id="__span-9-31"><a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a>[INFO] Asserting reset (GPIO21 low)...
-</span><span id="__span-9-32"><a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a>[INFO] Releasing reset (GPIO21 high)...
-</span><span id="__span-9-33"><a id="__codelineno-9-33" name="__codelineno-9-33" href="#__codelineno-9-33"></a>[INFO] Flashing firmware...
-</span><span id="__span-9-34"><a id="__codelineno-9-34" name="__codelineno-9-34" href="#__codelineno-9-34"></a>stm32flash 0.7
-</span><span id="__span-9-35"><a id="__codelineno-9-35" name="__codelineno-9-35" href="#__codelineno-9-35"></a>
-</span><span id="__span-9-36"><a id="__codelineno-9-36" name="__codelineno-9-36" href="#__codelineno-9-36"></a>http://stm32flash.sourceforge.net/
-</span><span id="__span-9-37"><a id="__codelineno-9-37" name="__codelineno-9-37" href="#__codelineno-9-37"></a>
-</span><span id="__span-9-38"><a id="__codelineno-9-38" name="__codelineno-9-38" href="#__codelineno-9-38"></a>Using Parser : Raw BINARY
-</span><span id="__span-9-39"><a id="__codelineno-9-39" name="__codelineno-9-39" href="#__codelineno-9-39"></a>Size         : 57248
-</span><span id="__span-9-40"><a id="__codelineno-9-40" name="__codelineno-9-40" href="#__codelineno-9-40"></a>Interface serial_posix: 57600 8E1
-</span><span id="__span-9-41"><a id="__codelineno-9-41" name="__codelineno-9-41" href="#__codelineno-9-41"></a>Version      : 0x22
-</span><span id="__span-9-42"><a id="__codelineno-9-42" name="__codelineno-9-42" href="#__codelineno-9-42"></a>Option 1     : 0x00
-</span><span id="__span-9-43"><a id="__codelineno-9-43" name="__codelineno-9-43" href="#__codelineno-9-43"></a>Option 2     : 0x00
-</span><span id="__span-9-44"><a id="__codelineno-9-44" name="__codelineno-9-44" href="#__codelineno-9-44"></a>Device ID    : 0x0410 (STM32F10xxx Medium-density)
-</span><span id="__span-9-45"><a id="__codelineno-9-45" name="__codelineno-9-45" href="#__codelineno-9-45"></a>- RAM        : Up to 20KiB  (512b reserved by bootloader)
-</span><span id="__span-9-46"><a id="__codelineno-9-46" name="__codelineno-9-46" href="#__codelineno-9-46"></a>- Flash      : Up to 128KiB (size first sector: 4x1024)
-</span><span id="__span-9-47"><a id="__codelineno-9-47" name="__codelineno-9-47" href="#__codelineno-9-47"></a>- Option RAM : 16b
-</span><span id="__span-9-48"><a id="__codelineno-9-48" name="__codelineno-9-48" href="#__codelineno-9-48"></a>- System RAM : 2KiB
-</span><span id="__span-9-49"><a id="__codelineno-9-49" name="__codelineno-9-49" href="#__codelineno-9-49"></a>Write to memory
-</span><span id="__span-9-50"><a id="__codelineno-9-50" name="__codelineno-9-50" href="#__codelineno-9-50"></a>Erasing memory
-</span><span id="__span-9-51"><a id="__codelineno-9-51" name="__codelineno-9-51" href="#__codelineno-9-51"></a>Wrote and verified address 0x0800dfa0 (100.00%) Done.
-</span><span id="__span-9-52"><a id="__codelineno-9-52" name="__codelineno-9-52" href="#__codelineno-9-52"></a>
-</span><span id="__span-9-53"><a id="__codelineno-9-53" name="__codelineno-9-53" href="#__codelineno-9-53"></a>Resetting device...
-</span><span id="__span-9-54"><a id="__codelineno-9-54" name="__codelineno-9-54" href="#__codelineno-9-54"></a>Reset done.
-</span><span id="__span-9-55"><a id="__codelineno-9-55" name="__codelineno-9-55" href="#__codelineno-9-55"></a>
-</span><span id="__span-9-56"><a id="__codelineno-9-56" name="__codelineno-9-56" href="#__codelineno-9-56"></a>[INFO] Setting BOOT0 low (GPIO20)...
-</span><span id="__span-9-57"><a id="__codelineno-9-57" name="__codelineno-9-57" href="#__codelineno-9-57"></a>[INFO] Resetting MCU to boot from flash...
-</span><span id="__span-9-58"><a id="__codelineno-9-58" name="__codelineno-9-58" href="#__codelineno-9-58"></a>[SUCCESS] Flashing complete and STM32 restarted successfully.
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>██╗  ██╗███████╗   ███████╗██╗      █████╗ ███████╗██╗  ██╗
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>██║  ██║██╔════╝   ██╔════╝██║     ██╔══██╗██╔════╝██║  ██║
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>███████║███████╗   █████╗  ██║     ███████║███████╗███████║
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>██╔══██║╚════██║   ██╔══╝  ██║     ██╔══██║╚════██║██╔══██║
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>██║  ██║███████║██╗██║     ███████╗██║  ██║███████║██║  ██║
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>╚═╝  ╚═╝╚══════╝╚═╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>                  * HOTSPOT FLASH EZ *
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>[WARN] stm32flash is not installed.
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>Install stm32flash now? [Y/n]: y
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>... apt output omitted...
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>
+</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>Enter BOOT0 GPIO pin [default 20]: 20
+</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>Enter NRST GPIO pin [default 21]: 21
+</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>Enter firmware filename (e.g. dvm-firmware-hs-hat-dual.bin): dvm-firmware-hs-hat-dual.bin
+</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>Enter serial port [default /dev/ttyAMA0]: /dev/ttyAMA0
+</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>
+</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a>===== Configuration Summary =====
+</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>BOOT0 GPIO      : 20
+</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a>NRST GPIO       : 21
+</span><span id="__span-10-22"><a id="__codelineno-10-22" name="__codelineno-10-22" href="#__codelineno-10-22"></a>BIN_FILE        : dvm-firmware-hs-hat-dual.bin
+</span><span id="__span-10-23"><a id="__codelineno-10-23" name="__codelineno-10-23" href="#__codelineno-10-23"></a>SERIAL_PORT     : /dev/ttyAMA0
+</span><span id="__span-10-24"><a id="__codelineno-10-24" name="__codelineno-10-24" href="#__codelineno-10-24"></a>stm32flash      : found
+</span><span id="__span-10-25"><a id="__codelineno-10-25" name="__codelineno-10-25" href="#__codelineno-10-25"></a>=================================
+</span><span id="__span-10-26"><a id="__codelineno-10-26" name="__codelineno-10-26" href="#__codelineno-10-26"></a>
+</span><span id="__span-10-27"><a id="__codelineno-10-27" name="__codelineno-10-27" href="#__codelineno-10-27"></a>Proceed with flashing? [Y/n]: y
+</span><span id="__span-10-28"><a id="__codelineno-10-28" name="__codelineno-10-28" href="#__codelineno-10-28"></a>[INFO] Proceeding with firmware flash setup...
+</span><span id="__span-10-29"><a id="__codelineno-10-29" name="__codelineno-10-29" href="#__codelineno-10-29"></a>[INFO] Setting BOOT0 high (GPIO20)...
+</span><span id="__span-10-30"><a id="__codelineno-10-30" name="__codelineno-10-30" href="#__codelineno-10-30"></a>[ raspi-gpio is deprecated - try `pinctrl` instead ]
+</span><span id="__span-10-31"><a id="__codelineno-10-31" name="__codelineno-10-31" href="#__codelineno-10-31"></a>[INFO] Asserting reset (GPIO21 low)...
+</span><span id="__span-10-32"><a id="__codelineno-10-32" name="__codelineno-10-32" href="#__codelineno-10-32"></a>[INFO] Releasing reset (GPIO21 high)...
+</span><span id="__span-10-33"><a id="__codelineno-10-33" name="__codelineno-10-33" href="#__codelineno-10-33"></a>[INFO] Flashing firmware...
+</span><span id="__span-10-34"><a id="__codelineno-10-34" name="__codelineno-10-34" href="#__codelineno-10-34"></a>stm32flash 0.7
+</span><span id="__span-10-35"><a id="__codelineno-10-35" name="__codelineno-10-35" href="#__codelineno-10-35"></a>
+</span><span id="__span-10-36"><a id="__codelineno-10-36" name="__codelineno-10-36" href="#__codelineno-10-36"></a>http://stm32flash.sourceforge.net/
+</span><span id="__span-10-37"><a id="__codelineno-10-37" name="__codelineno-10-37" href="#__codelineno-10-37"></a>
+</span><span id="__span-10-38"><a id="__codelineno-10-38" name="__codelineno-10-38" href="#__codelineno-10-38"></a>Using Parser : Raw BINARY
+</span><span id="__span-10-39"><a id="__codelineno-10-39" name="__codelineno-10-39" href="#__codelineno-10-39"></a>Size         : 57248
+</span><span id="__span-10-40"><a id="__codelineno-10-40" name="__codelineno-10-40" href="#__codelineno-10-40"></a>Interface serial_posix: 57600 8E1
+</span><span id="__span-10-41"><a id="__codelineno-10-41" name="__codelineno-10-41" href="#__codelineno-10-41"></a>Version      : 0x22
+</span><span id="__span-10-42"><a id="__codelineno-10-42" name="__codelineno-10-42" href="#__codelineno-10-42"></a>Option 1     : 0x00
+</span><span id="__span-10-43"><a id="__codelineno-10-43" name="__codelineno-10-43" href="#__codelineno-10-43"></a>Option 2     : 0x00
+</span><span id="__span-10-44"><a id="__codelineno-10-44" name="__codelineno-10-44" href="#__codelineno-10-44"></a>Device ID    : 0x0410 (STM32F10xxx Medium-density)
+</span><span id="__span-10-45"><a id="__codelineno-10-45" name="__codelineno-10-45" href="#__codelineno-10-45"></a>- RAM        : Up to 20KiB  (512b reserved by bootloader)
+</span><span id="__span-10-46"><a id="__codelineno-10-46" name="__codelineno-10-46" href="#__codelineno-10-46"></a>- Flash      : Up to 128KiB (size first sector: 4x1024)
+</span><span id="__span-10-47"><a id="__codelineno-10-47" name="__codelineno-10-47" href="#__codelineno-10-47"></a>- Option RAM : 16b
+</span><span id="__span-10-48"><a id="__codelineno-10-48" name="__codelineno-10-48" href="#__codelineno-10-48"></a>- System RAM : 2KiB
+</span><span id="__span-10-49"><a id="__codelineno-10-49" name="__codelineno-10-49" href="#__codelineno-10-49"></a>Write to memory
+</span><span id="__span-10-50"><a id="__codelineno-10-50" name="__codelineno-10-50" href="#__codelineno-10-50"></a>Erasing memory
+</span><span id="__span-10-51"><a id="__codelineno-10-51" name="__codelineno-10-51" href="#__codelineno-10-51"></a>Wrote and verified address 0x0800dfa0 (100.00%) Done.
+</span><span id="__span-10-52"><a id="__codelineno-10-52" name="__codelineno-10-52" href="#__codelineno-10-52"></a>
+</span><span id="__span-10-53"><a id="__codelineno-10-53" name="__codelineno-10-53" href="#__codelineno-10-53"></a>Resetting device...
+</span><span id="__span-10-54"><a id="__codelineno-10-54" name="__codelineno-10-54" href="#__codelineno-10-54"></a>Reset done.
+</span><span id="__span-10-55"><a id="__codelineno-10-55" name="__codelineno-10-55" href="#__codelineno-10-55"></a>
+</span><span id="__span-10-56"><a id="__codelineno-10-56" name="__codelineno-10-56" href="#__codelineno-10-56"></a>[INFO] Setting BOOT0 low (GPIO20)...
+</span><span id="__span-10-57"><a id="__codelineno-10-57" name="__codelineno-10-57" href="#__codelineno-10-57"></a>[INFO] Resetting MCU to boot from flash...
+</span><span id="__span-10-58"><a id="__codelineno-10-58" name="__codelineno-10-58" href="#__codelineno-10-58"></a>[SUCCESS] Flashing complete and STM32 restarted successfully.
 </span></code></pre></div>
 </li>
 </ol>
@@ -333,29 +372,29 @@
 <ol>
 <li>
 <p>Download the latest release from the <a href="https://github.com/DVMProject/dvmhost">DVMProject GitHub</a>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>ssh<span class="w"> </span>user@remotevps
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="nb">cd</span><span class="w"> </span>/opt/
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>sudo<span class="w"> </span>wget<span class="w"> </span><span class="o">[</span>latest-dvmhost-release-for-your-cpu-architecture.tar.gz<span class="o">]</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>ssh<span class="w"> </span>user@remotevps
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="nb">cd</span><span class="w"> </span>/opt/
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>sudo<span class="w"> </span>wget<span class="w"> </span><span class="o">[</span>latest-dvmhost-release-for-your-cpu-architecture.tar.gz<span class="o">]</span>
 </span></code></pre></div>
 </li>
 <li>
 <p>Extract and remove the downloaded archive.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>sudo<span class="w"> </span>tar<span class="w"> </span>zxvf<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="c1"># Remove archive (optional)</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>sudo<span class="w"> </span>rm<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>sudo<span class="w"> </span>tar<span class="w"> </span>zxvf<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="c1"># Remove archive (optional)</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>sudo<span class="w"> </span>rm<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
 </span></code></pre></div>
 </li>
 <li>
 <p>Organize the <code>/opt/dvm</code> working directory. You are free to set your directories as you see fit, just be sure to update the downstream configuration files as they will reference the paths set forth by this guide.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">cd</span><span class="w"> </span>/opt/dvm/
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/examples/
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>sudo<span class="w"> </span>mv<span class="w"> </span>/opt/dvm/*.example.*<span class="w"> </span>/opt/dvm/examples/
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/dvm/log/fne/
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/log/fne-activity
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/rules/
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nb">cd</span><span class="w"> </span>/opt/dvm/
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/examples/
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>sudo<span class="w"> </span>mv<span class="w"> </span>/opt/dvm/*.example.*<span class="w"> </span>/opt/dvm/examples/
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>/opt/dvm/log/fne/
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/log/fne-activity
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/rules/
 </span></code></pre></div>
 </li>
 </ol>
@@ -363,13 +402,13 @@
 <ol>
 <li>
 <p>Make a copy of the example <code>fne-config.yml</code> file for editing.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/fne-config.example.yml<span class="w"> </span>/opt/dvm/fne-config.yml
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/fne-config.yml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/fne-config.example.yml<span class="w"> </span>/opt/dvm/fne-config.yml
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/fne-config.yml
 </span></code></pre></div>
 </li>
 <li>
 <p>Define the base settings for P25 functionality within <code>fne-config.yml</code>. At minimum locate and configure these core settings marked in green on the comparison listed below within <code>fne-config.yml</code>. All other settings can be set to your preference. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/fne-config.yml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/fne-config.yml
 </span></code></pre></div>
 <ul>
 <li>Base Example: <a href="https://github.com/DVMProject/dvmhost/blob/master/configs/fne-config.example.yml">fne-config.yml</a></li>
@@ -379,14 +418,14 @@
 </li>
 <li>
 <p>Make a copy of the base rules, acls, and peer list for editing.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/rid_acl.example.dat<span class="w"> </span>/opt/dvm/rules/rid_acl.dat
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/talkgroup_rules.example.yml<span class="w"> </span>/opt/dvm/rules/talkgroup_rules.yml
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/peer_list.example.dat<span class="w"> </span>/opt/dvm/rules/peer_list.dat
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/rid_acl.example.dat<span class="w"> </span>/opt/dvm/rules/rid_acl.dat
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/talkgroup_rules.example.yml<span class="w"> </span>/opt/dvm/rules/talkgroup_rules.yml
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/peer_list.example.dat<span class="w"> </span>/opt/dvm/rules/peer_list.dat
 </span></code></pre></div>
 </li>
 <li>
 <p>Define the peers that will be allowed to connect to your FNE within <code>peer_list.dat</code>. This file controls which hotspots (peers) are able to connect to this FNE. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/peer_list.dat
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/peer_list.dat
 </span></code></pre></div>
 <ul>
 <li>Base Example: <a href="https://github.com/DVMProject/dvmhost/blob/master/configs/peer_list.example.dat">peer_list.dat</a></li>
@@ -396,7 +435,7 @@
 </li>
 <li>
 <p>Define the talkgroups that you want to have have accessible to your peers within <code>talkgroup_rules.yml</code>. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/talkgroup_rules.yml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/talkgroup_rules.yml
 </span></code></pre></div>
 <ul>
 <li>Base Example: <a href="https://github.com/DVMProject/dvmhost/blob/master/configs/talkgroup_rules.example.yml">talkgroup_rules.yml</a></li>
@@ -404,7 +443,7 @@
 <li>Comparison: <a href="https://www.diffchecker.com/3lxEHeJL/">talkgroup_rules.yml</a></li>
 </ul>
 <p><strong>Optional:</strong> Populate <code>rid_acl.dat</code> if you wish to restrict access to your FNE by radio ID. This can always be configured later. If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/rid_acl.dat
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/rid_acl.dat
 </span></code></pre></div>
 <ul>
 <li>Base Example: <a href="https://github.com/DVMProject/dvmhost/blob/master/configs/rid_acl.example.dat">rid_acl.dat</a></li>
@@ -414,7 +453,7 @@
 </li>
 <li>
 <p>Start the <code>dvmfne</code> daemon.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>sudo<span class="w"> </span>/opt/dvm/start-dvm-fne.sh<span class="w"> </span>fne-config.yml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>sudo<span class="w"> </span>/opt/dvm/start-dvm-fne.sh<span class="w"> </span>fne-config.yml
 </span></code></pre></div>
 </li>
 </ol>
@@ -438,29 +477,29 @@
 <ol>
 <li>
 <p>Download the latest release from the <a href="https://github.com/DVMProject/dvmhost">DVMProject GitHub</a>.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>ssh<span class="w"> </span>user@raspberrypi
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="nb">cd</span><span class="w"> </span>/opt/
-</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>sudo<span class="w"> </span>wget<span class="w"> </span><span class="o">[</span>latest-dvmhost-release-for-your-cpu-architecture.tar.gz<span class="o">]</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>ssh<span class="w"> </span>user@raspberrypi
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="nb">cd</span><span class="w"> </span>/opt/
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>sudo<span class="w"> </span>wget<span class="w"> </span><span class="o">[</span>latest-dvmhost-release-for-your-cpu-architecture.tar.gz<span class="o">]</span>
 </span></code></pre></div>
 </li>
 <li>
 <p>Extract and remove the downloaded archive.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>sudo<span class="w"> </span>tar<span class="w"> </span>zxvf<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="c1"># Remove archive (optional)</span>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a>sudo<span class="w"> </span>rm<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>sudo<span class="w"> </span>tar<span class="w"> </span>zxvf<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a><span class="c1"># Remove archive (optional)</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>sudo<span class="w"> </span>rm<span class="w"> </span><span class="o">[</span>latest-dvmhost-release.tar.gz<span class="o">]</span>
 </span></code></pre></div>
 </li>
 <li>
 <p>Organize the <code>/opt/dvm</code> working directory. You are free to set your directories as you see fit, just be sure to update the downstream configuration files as they will reference the paths set forth by this guide.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="nb">cd</span><span class="w"> </span>/opt/dvm/
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/examples/
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>sudo<span class="w"> </span>mv<span class="w"> </span>/opt/dvm/*.example.*<span class="w"> </span>/opt/dvm/examples/
-</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/log/host/
-</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/log/host-activity/
-</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/rules/
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nb">cd</span><span class="w"> </span>/opt/dvm/
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/examples/
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>sudo<span class="w"> </span>mv<span class="w"> </span>/opt/dvm/*.example.*<span class="w"> </span>/opt/dvm/examples/
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/log/host/
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/log/host-activity/
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a>sudo<span class="w"> </span>mkdir<span class="w"> </span>/opt/dvm/rules/
 </span></code></pre></div>
 </li>
 </ol>
@@ -468,8 +507,8 @@
 <ol>
 <li>
 <p>Copy the example <code>ident_table.dat</code> file and configure it for your frequency range. This guide is going to focus on the UHF R2 range as this will cover FCC Part 90 itinerant frequencies where encryption is legal.  If you do not wish to make the changes by hand, you may simply download the completed example that aligns with this guide instead.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/iden_table.example.dat<span class="w"> </span>/opt/dvm/rules/iden_table.dat
-</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/iden_table.dat
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/iden_table.example.dat<span class="w"> </span>/opt/dvm/rules/iden_table.dat
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/rules/iden_table.dat
 </span></code></pre></div>
 <ul>
 <li>Base Example: <a href="https://github.com/DVMProject/dvmhost/blob/master/configs/iden_table.example.dat">iden_table.dat</a></li>
@@ -512,8 +551,8 @@
 </li>
 <li>
 <p>Make a copy of the example <code>config.yml</code> file for editing.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/config.example.yml<span class="w"> </span>/opt/dvm/config.yml
-</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/config.yml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>sudo<span class="w"> </span>cp<span class="w"> </span>/opt/dvm/examples/config.example.yml<span class="w"> </span>/opt/dvm/config.yml
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/opt/dvm/config.yml
 </span></code></pre></div>
 </li>
 <li>
@@ -527,7 +566,7 @@
 </li>
 <li>
 <p>Connect to the modem to verify your settings.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>sudo<span class="w"> </span>/opt/dvm/dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml<span class="w"> </span>--setup
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>sudo<span class="w"> </span>/opt/dvm/dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml<span class="w"> </span>--setup
 </span></code></pre></div>
 <ul>
 <li>Press <strong>F8</strong> — the modem should initialize and connect successfully. If it does not, check your connections. This is also where alignment would take place if necessary. Alignment is generally needed if the hotspot does not activate when receiving a transmission from a subscriber radio. For assistance tuning your modem please refer to the calibration tutorial under the reference section or the <a href="https://github.com/DVMProject/dvmhost#dvmhost-configuration">offical calibration steps</a> from the <a href="https://github.com/DVMProject/">DVMProject GitHub</a>.</li>
@@ -541,11 +580,11 @@
 </li>
 <li>
 <p>Start the <code>dvmhost</code> process as a daemon and verify your process is running.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>sudo<span class="w"> </span>/opt/dvm/start-dvm.sh<span class="w"> </span>/opt/dvm/config.yml
-</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>dvmhost
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>sudo<span class="w"> </span>/opt/dvm/start-dvm.sh<span class="w"> </span>/opt/dvm/config.yml
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>dvmhost
 </span></code></pre></div>
 <p><code>dvmhost</code> running under <code>root</code> output example:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>root<span class="w">      </span><span class="m">8943</span><span class="w">  </span><span class="m">1</span>.1<span class="w">  </span><span class="m">0</span>.1<span class="w"> </span><span class="m">117616</span><span class="w">  </span><span class="m">9472</span><span class="w"> </span>?<span class="w">        </span>Ssl<span class="w">  </span>Jun01<span class="w">  </span><span class="m">38</span>:51<span class="w"> </span>dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>root<span class="w">      </span><span class="m">8943</span><span class="w">  </span><span class="m">1</span>.1<span class="w">  </span><span class="m">0</span>.1<span class="w"> </span><span class="m">117616</span><span class="w">  </span><span class="m">9472</span><span class="w"> </span>?<span class="w">        </span>Ssl<span class="w">  </span>Jun01<span class="w">  </span><span class="m">38</span>:51<span class="w"> </span>dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml
 </span></code></pre></div>
 <ul>
 <li><strong>Note:</strong> If you do not see a <code>dvmhost</code> process running, review <code>/opt/dvm/log/host/host-CURRENT-DATE.log</code> for details.</li>
@@ -553,29 +592,29 @@
 </li>
 <li>
 <p>Create a <code>dvmhost</code> system service.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/systemd/system/dvmhost.service
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>sudo<span class="w"> </span>nano<span class="w"> </span>/etc/systemd/system/dvmhost.service
 </span></code></pre></div>
 <p>Example <code>dvmhost.service</code>:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="o">[</span>Unit<span class="o">]</span>
-</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="nv">Description</span><span class="o">=</span>dvmhost
-</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a><span class="nv">After</span><span class="o">=</span>network.target
-</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a>
-</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="o">[</span>Service<span class="o">]</span>
-</span><span id="__span-29-6"><a id="__codelineno-29-6" name="__codelineno-29-6" href="#__codelineno-29-6"></a><span class="nv">ExecStart</span><span class="o">=</span>/opt/dvm/bin/dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml<span class="w"> </span>-f
-</span><span id="__span-29-7"><a id="__codelineno-29-7" name="__codelineno-29-7" href="#__codelineno-29-7"></a><span class="nv">User</span><span class="o">=</span>root
-</span><span id="__span-29-8"><a id="__codelineno-29-8" name="__codelineno-29-8" href="#__codelineno-29-8"></a><span class="nv">Type</span><span class="o">=</span>forking
-</span><span id="__span-29-9"><a id="__codelineno-29-9" name="__codelineno-29-9" href="#__codelineno-29-9"></a><span class="nv">Restart</span><span class="o">=</span>on-abnormal
-</span><span id="__span-29-10"><a id="__codelineno-29-10" name="__codelineno-29-10" href="#__codelineno-29-10"></a><span class="nv">TimeoutSec</span><span class="o">=</span>infinity
-</span><span id="__span-29-11"><a id="__codelineno-29-11" name="__codelineno-29-11" href="#__codelineno-29-11"></a>
-</span><span id="__span-29-12"><a id="__codelineno-29-12" name="__codelineno-29-12" href="#__codelineno-29-12"></a><span class="o">[</span>Install<span class="o">]</span>
-</span><span id="__span-29-13"><a id="__codelineno-29-13" name="__codelineno-29-13" href="#__codelineno-29-13"></a><span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="o">[</span>Unit<span class="o">]</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="nv">Description</span><span class="o">=</span>dvmhost
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a><span class="nv">After</span><span class="o">=</span>network.target
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="o">[</span>Service<span class="o">]</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a><span class="nv">ExecStart</span><span class="o">=</span>/opt/dvm/bin/dvmhost<span class="w"> </span>-c<span class="w"> </span>/opt/dvm/config.yml<span class="w"> </span>-f
+</span><span id="__span-30-7"><a id="__codelineno-30-7" name="__codelineno-30-7" href="#__codelineno-30-7"></a><span class="nv">User</span><span class="o">=</span>root
+</span><span id="__span-30-8"><a id="__codelineno-30-8" name="__codelineno-30-8" href="#__codelineno-30-8"></a><span class="nv">Type</span><span class="o">=</span>forking
+</span><span id="__span-30-9"><a id="__codelineno-30-9" name="__codelineno-30-9" href="#__codelineno-30-9"></a><span class="nv">Restart</span><span class="o">=</span>on-abnormal
+</span><span id="__span-30-10"><a id="__codelineno-30-10" name="__codelineno-30-10" href="#__codelineno-30-10"></a><span class="nv">TimeoutSec</span><span class="o">=</span>infinity
+</span><span id="__span-30-11"><a id="__codelineno-30-11" name="__codelineno-30-11" href="#__codelineno-30-11"></a>
+</span><span id="__span-30-12"><a id="__codelineno-30-12" name="__codelineno-30-12" href="#__codelineno-30-12"></a><span class="o">[</span>Install<span class="o">]</span>
+</span><span id="__span-30-13"><a id="__codelineno-30-13" name="__codelineno-30-13" href="#__codelineno-30-13"></a><span class="nv">WantedBy</span><span class="o">=</span>multi-user.target
 </span></code></pre></div>
 </li>
 <li>
 <p>Enable the <code>dvmhost</code> service to start at system boot.</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
-</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>dvmhost.service
-</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>dvmhost.service
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>daemon-reload
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>dvmhost.service
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>sudo<span class="w"> </span>systemctl<span class="w"> </span>start<span class="w"> </span>dvmhost.service
 </span></code></pre></div>
 </li>
 </ol>
